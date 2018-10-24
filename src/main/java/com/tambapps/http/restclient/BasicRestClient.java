@@ -1,4 +1,4 @@
-package com.tambapps.json.rest.client;
+package com.tambapps.http.restclient;
 
 import java.io.File;
 import java.io.InputStream;
@@ -25,13 +25,14 @@ public class BasicRestClient extends AbstractRestClient {
   }
 
   @Override
-  public void outputRequest(String method, String endPoint, Object data, Callback<String> callback) {
-    new JsonOutputRequest(data, endPoint, method, callback).run();
+  public void outputRequest(String method, String endPoint, String jsonData, Callback<String> callback) {
+    new JsonOutputRequest(jsonData, endPoint, method, callback).run();
   }
 
   @Override
-  public void getFile(String endPoint, Callback<InputStream> callback) {
-    throw new UnsupportedOperationException("Not implemented yet");
+  public void getFile(String endPoint, Callback<InputStream> callback,
+      Callback<String> onError) {
+    new GetFileRequest(endPoint, callback, onError).run();
   }
 
   @Override

@@ -1,4 +1,4 @@
-package com.tambapps.json.rest.client;
+package com.tambapps.http.restclient;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,6 +1,4 @@
-package com.tambapps.json.rest.client;
-
-import com.google.gson.Gson;
+package com.tambapps.http.restclient;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -14,12 +12,13 @@ import java.net.URL;
 
 public abstract class AbstractRestClient implements RestClient {
 
-
-  private final Gson gson = new Gson(); //supposed to be thread safe
+  private static final String CONTENT_TYPE = "Content-Type";
   private final String baseUrl;
+  private String jwt;
 
   public AbstractRestClient(String baseUrl) {
     this.baseUrl = baseUrl;
+    jwt = null;
   }
 
   @Override
@@ -28,8 +27,8 @@ public abstract class AbstractRestClient implements RestClient {
   }
 
   @Override
-  public void putObject(String endPoint, Object data, Callback<String> callback) {
-    outputRequest(PUT, endPoint, data, callback);
+  public void putObject(String endPoint, String jsonData, Callback<String> callback) {
+    outputRequest(PUT, endPoint, jsonData, callback);
   }
 
   @Override
@@ -38,8 +37,8 @@ public abstract class AbstractRestClient implements RestClient {
   }
 
   @Override
-  public void postObject(String endPoint, Object data, Callback<String> callback) {
-    outputRequest(POST, endPoint, data, callback);
+  public void postObject(String endPoint, String jsonData, Callback<String> callback) {
+    outputRequest(POST, endPoint, jsonData, callback);
   }
 
   private abstract class HttpRequest implements Runnable {
@@ -57,6 +56,10 @@ public abstract class AbstractRestClient implements RestClient {
         URL u = new URL(url);
         connection= (HttpURLConnection) u.openConnection();
         prepareRequest(connection);
+        if (jwt != null) {
+          connection.setRequestProperty("Authorization", "Bearer " + jwt);
+        }
+
       } catch (IOException e) {
         onError(e);
         return;
@@ -136,10 +139,10 @@ public abstract class AbstractRestClient implements RestClient {
 
   class JsonOutputRequest extends JsonRequest {
 
-    private final Object data;
+    private final String data;
     private final String method;
 
-    JsonOutputRequest(Object data, String endpoint, String method, Callback<String> callback) {
+    JsonOutputRequest(String data, String endpoint, String method, Callback<String> callback) {
       super(endpoint, callback);
       this.data = data;
       this.method = method;
@@ -147,14 +150,15 @@ public abstract class AbstractRestClient implements RestClient {
 
     @Override
     void prepareRequest(HttpURLConnection connection) throws IOException {
-      connection.setRequestProperty("Accept", "application/json");
-      connection.setRequestProperty("content-type", "application/json");
+      String jsonType = "application/json";
+      connection.setRequestProperty("Accept", jsonType);
+      connection.setRequestProperty(CONTENT_TYPE,  jsonType);
 
       connection.setRequestMethod(method);
       connection.setDoOutput(true);
 
-      try (OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream())) {
-        wr.write(gson.toJson(data));
+      try (OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream())) {
+        wr.write(data);
         wr.flush();
       }
     }
@@ -166,7 +170,6 @@ public abstract class AbstractRestClient implements RestClient {
     private final String crlf = "\r\n";
     private final File file;
     private final String method;
-
 
     PutFileRequest(File file, String endpoint, String method, Callback<String> callback) {
       super(endpoint, callback);
@@ -183,7 +186,7 @@ public abstract class AbstractRestClient implements RestClient {
       connection.setRequestProperty("Connection", "Keep-Alive");
       connection.setRequestProperty("Cache-Control", "no-cache");
       connection.setRequestProperty(
-          "Content-Type", "multipart/form-data;boundary=" + this.boundary);
+          CONTENT_TYPE, "multipart/form-data;boundary=" + this.boundary);
 
       String fileName = file.getName();
 
@@ -203,13 +206,15 @@ public abstract class AbstractRestClient implements RestClient {
 
   }
 
-  private class GetFileRequest extends HttpRequest {
+  class GetFileRequest extends HttpRequest {
 
     private final Callback<InputStream> callback;
+    private final Callback<String> onError;
 
-    GetFileRequest(String endpoint, Callback<InputStream> callback) {
+    GetFileRequest(String endpoint, Callback<InputStream> callback, Callback<String> onError) {
       super(endpoint);
       this.callback = callback;
+      this.onError = onError;
     }
 
     @Override
@@ -224,7 +229,18 @@ public abstract class AbstractRestClient implements RestClient {
 
     @Override
     void onError(Exception e) {
-      //TODO
+      onError.call(REQUEST_NOT_COMPLETED, e.getMessage());
     }
   }
+
+  @Override
+  public void setJwt(String jwt) {
+    this.jwt = jwt;
+  }
+
+  @Override
+  public void removeJwt() {
+    setJwt(null);
+  }
+
 }
