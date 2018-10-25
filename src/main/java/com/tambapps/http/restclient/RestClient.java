@@ -30,6 +30,6 @@ public interface RestClient {
   void shutdown();
 
   interface Callback<T> {
-    void call(int responseCode, T data);
+    void onResponse(int responseCode, T data);
   }
 }

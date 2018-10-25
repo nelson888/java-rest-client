@@ -101,12 +101,12 @@ public abstract class AbstractRestClient implements RestClient {
 
     @Override
     void onResponse(int responseCode, InputStream stream) throws IOException {
-      callback.call(responseCode, IOUtils.toString(stream));
+      callback.onResponse(responseCode, IOUtils.toString(stream));
     }
 
     @Override
     void onError(Exception e) {
-      callback.call(REQUEST_NOT_COMPLETED, e.getMessage());
+      callback.onResponse(REQUEST_NOT_COMPLETED, e.getMessage());
     }
   }
 
@@ -224,12 +224,12 @@ public abstract class AbstractRestClient implements RestClient {
 
     @Override
     void onResponse(int responseCode, InputStream stream) throws IOException {
-      callback.call(responseCode, stream); //TODO NOT GOOD LOOKS LIKE FILE IS IN A STRING, CREATE A FILEIMAGE FORMAT
+      callback.onResponse(responseCode, stream); //TODO NOT GOOD LOOKS LIKE FILE IS IN A STRING, CREATE A FILEIMAGE FORMAT
     }
 
     @Override
     void onError(Exception e) {
-      onError.call(REQUEST_NOT_COMPLETED, e.getMessage());
+      onError.onResponse(REQUEST_NOT_COMPLETED, e.getMessage());
     }
   }
 
