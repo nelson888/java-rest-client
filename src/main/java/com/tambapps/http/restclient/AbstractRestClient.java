@@ -165,6 +165,7 @@ public abstract class AbstractRestClient implements RestClient {
 
     private final String boundary =  "*****";
     private final String crlf = "\r\n";
+    private final String twoHyphens = "--";
     private final File file;
     private final String method;
 
@@ -187,17 +188,24 @@ public abstract class AbstractRestClient implements RestClient {
 
       String fileName = file.getName();
 
-      DataOutputStream request = new DataOutputStream(
-          connection.getOutputStream());
-
-      request.writeBytes("--" + this.boundary + crlf);
-      request.writeBytes("Content-Disposition: form-data; name=\"" +
-          fileName + "\";filename=\"" +
-          fileName + "\"" + crlf);
-      request.writeBytes(crlf);
-      try (FileInputStream is = new FileInputStream(file)) {
-        //TODO WRITE FILE into stream
-        //useful link: https://stackoverflow.com/questions/11766878/sending-files-using-post-with-httpurlconnection
+      try (DataOutputStream request = new DataOutputStream(
+          connection.getOutputStream())) {
+        request.writeBytes(twoHyphens + boundary + crlf);
+        request.writeBytes("Content-Disposition: form-data; name=\"" +
+            fileName + "\";filename=\"" +
+            fileName + "\"" + crlf);
+        request.writeBytes(crlf);
+        try (FileInputStream is = new FileInputStream(file)) {
+          //TODO WRITE FILE into stream
+          int b;
+          while ((b = is.read()) != -1) {
+            request.write(b);
+          }
+          //useful link: https://stackoverflow.com/questions/11766878/sending-files-using-post-with-httpurlconnection
+        }
+        request.writeBytes(crlf);
+        request.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
+        request.flush();
       }
     }
 
