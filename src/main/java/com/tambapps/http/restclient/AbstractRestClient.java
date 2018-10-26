@@ -175,6 +175,7 @@ public abstract class AbstractRestClient implements RestClient {
       this.method = method;
     }
 
+    //https://stackoverflow.com/questions/11766878/sending-files-using-post-with-httpurlconnection
     @Override
     void prepareRequest(HttpURLConnection connection) throws IOException {
       connection.setUseCaches(false);
@@ -196,12 +197,10 @@ public abstract class AbstractRestClient implements RestClient {
             fileName + "\"" + crlf);
         request.writeBytes(crlf);
         try (FileInputStream is = new FileInputStream(file)) {
-          //TODO WRITE FILE into stream
           int b;
           while ((b = is.read()) != -1) {
             request.write(b);
           }
-          //useful link: https://stackoverflow.com/questions/11766878/sending-files-using-post-with-httpurlconnection
         }
         request.writeBytes(crlf);
         request.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
