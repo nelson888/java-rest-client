@@ -21,7 +21,9 @@ public interface RestClient {
   //TODO to test
   void getFile(String endPoint, Callback<InputStream> callback, Callback<String> onError);
   void fileUploadRequest(String method, String endPoint, File file, Callback<String> callback);
+  void fileUploadRequest(String method, String endPoint, File file, String key, Callback<String> callback);
   void putFile(String endPoint, File file, Callback<String> callback);
+  void putFile(String endPoint, File file, String key, Callback<String> callback);
   void postFile(String endPoint, File file, Callback<String> callback);
 
   void setJwt(String jwt);

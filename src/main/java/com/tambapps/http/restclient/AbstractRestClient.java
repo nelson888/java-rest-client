@@ -29,6 +29,11 @@ public abstract class AbstractRestClient implements RestClient {
   }
 
   @Override
+  public void putFile(String endPoint, File file, String key, Callback<String> callback) {
+    fileUploadRequest(PUT, endPoint, file, key, callback);
+  }
+
+  @Override
   public void putObject(String endPoint, String jsonData, Callback<String> callback) {
     outputRequest(PUT, endPoint, jsonData, callback);
   }
@@ -41,6 +46,12 @@ public abstract class AbstractRestClient implements RestClient {
   @Override
   public void postObject(String endPoint, String jsonData, Callback<String> callback) {
     outputRequest(POST, endPoint, jsonData, callback);
+  }
+
+  @Override
+  public void fileUploadRequest(String method, String endPoint, File file,
+      Callback<String> callback) {
+    fileUploadRequest(method, endPoint, file, file.getName(), callback);
   }
 
   private abstract class HttpRequest implements Runnable {
@@ -168,11 +179,13 @@ public abstract class AbstractRestClient implements RestClient {
     private final String twoHyphens = "--";
     private final File file;
     private final String method;
+    private final String key;
 
-    PutFileRequest(File file, String endpoint, String method, Callback<String> callback) {
+    PutFileRequest(File file, String key, String endpoint, String method, Callback<String> callback) {
       super(endpoint, callback);
       this.file = file;
       this.method = method;
+      this.key = key;
     }
 
     //https://stackoverflow.com/questions/11766878/sending-files-using-post-with-httpurlconnection
@@ -193,7 +206,7 @@ public abstract class AbstractRestClient implements RestClient {
           connection.getOutputStream())) {
         request.writeBytes(twoHyphens + boundary + crlf);
         request.writeBytes("Content-Disposition: form-data; name=\"" +
-            fileName + "\";filename=\"" +
+            key + "\";filename=\"" +
             fileName + "\"" + crlf);
         request.writeBytes(crlf);
         try (FileInputStream is = new FileInputStream(file)) {

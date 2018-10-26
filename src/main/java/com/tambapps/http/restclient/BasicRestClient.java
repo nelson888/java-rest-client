@@ -10,8 +10,8 @@ public class BasicRestClient extends AbstractRestClient {
   }
 
   @Override
-  public void fileUploadRequest(String method, String endPoint, File file, Callback<String> callback) {
-    new PutFileRequest(file, endPoint, method, callback).run();
+  public void fileUploadRequest(String method, String endPoint, File file, String key, Callback<String> callback) {
+    new PutFileRequest(file, key, endPoint, method, callback).run();
   }
 
   @Override

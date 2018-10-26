@@ -15,8 +15,8 @@ public class AsyncRestClient extends AbstractRestClient {
   }
 
   @Override
-  public void fileUploadRequest(String method, String endPoint, File file, Callback<String> callback) {
-    executor.submit(new PutFileRequest(file, endPoint, method, callback));
+  public void fileUploadRequest(String method, String endPoint, File file, String key, Callback<String> callback) {
+    executor.submit(new PutFileRequest(file, key, endPoint, method, callback));
   }
 
   @Override
