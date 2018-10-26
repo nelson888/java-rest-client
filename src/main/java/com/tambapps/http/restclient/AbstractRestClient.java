@@ -13,6 +13,8 @@ import java.net.URL;
 public abstract class AbstractRestClient implements RestClient {
 
   private static final String CONTENT_TYPE = "Content-Type";
+  private static final String JSON_TYPE = "application/json";
+
   private final String baseUrl;
   private String jwt;
 
@@ -68,7 +70,7 @@ public abstract class AbstractRestClient implements RestClient {
       try {
         int responseCode = connection.getResponseCode();
 
-        try (InputStream stream = isErrorCode(responseCode) ?
+        try (InputStream stream = IOUtils.isErrorCode(responseCode) ?
             connection.getErrorStream() :
             connection.getInputStream()) {
           onResponse(responseCode, stream);
@@ -79,10 +81,6 @@ public abstract class AbstractRestClient implements RestClient {
       } finally {
         connection.disconnect();
       }
-    }
-
-    private boolean isErrorCode(int responseCode) {
-      return responseCode < 200 || responseCode>= 300;
     }
 
     abstract void prepareRequest(HttpURLConnection connection) throws IOException;
@@ -132,7 +130,6 @@ public abstract class AbstractRestClient implements RestClient {
 
     @Override
     void prepareRequest(HttpURLConnection connection) throws IOException {
-      //by default, the request is a get
       connection.setRequestMethod(method);
     }
   }
@@ -150,9 +147,9 @@ public abstract class AbstractRestClient implements RestClient {
 
     @Override
     void prepareRequest(HttpURLConnection connection) throws IOException {
-      String jsonType = "application/json";
-      connection.setRequestProperty("Accept", jsonType);
-      connection.setRequestProperty(CONTENT_TYPE,  jsonType);
+
+      connection.setRequestProperty("Accept", JSON_TYPE);
+      connection.setRequestProperty(CONTENT_TYPE, JSON_TYPE);
 
       connection.setRequestMethod(method);
       connection.setDoOutput(true);

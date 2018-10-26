@@ -19,4 +19,8 @@ public final class IOUtils {
     return builder.toString();
   }
 
+  public static boolean isErrorCode(int responseCode) {
+    return responseCode < 200 || responseCode>= 300;
+  }
+
 }
