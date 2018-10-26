@@ -24,33 +24,33 @@ public abstract class AbstractRestClient implements RestClient {
   }
 
   @Override
-  public void putFile(String endPoint, File file, Callback<String> callback) {
+  public void putFile(String endPoint, File file, Callback callback) {
     fileUploadRequest(PUT, endPoint, file, callback);
   }
 
   @Override
-  public void putFile(String endPoint, File file, String key, Callback<String> callback) {
+  public void putFile(String endPoint, File file, String key, Callback callback) {
     fileUploadRequest(PUT, endPoint, file, key, callback);
   }
 
   @Override
-  public void putObject(String endPoint, String jsonData, Callback<String> callback) {
+  public void putObject(String endPoint, String jsonData, Callback callback) {
     outputRequest(PUT, endPoint, jsonData, callback);
   }
 
   @Override
-  public void postFile(String endPoint, File file, Callback<String> callback) {
+  public void postFile(String endPoint, File file, Callback callback) {
     fileUploadRequest(POST, endPoint, file, callback);
   }
 
   @Override
-  public void postObject(String endPoint, String jsonData, Callback<String> callback) {
+  public void postObject(String endPoint, String jsonData, Callback callback) {
     outputRequest(POST, endPoint, jsonData, callback);
   }
 
   @Override
   public void fileUploadRequest(String method, String endPoint, File file,
-      Callback<String> callback) {
+      Callback callback) {
     fileUploadRequest(method, endPoint, file, file.getName(), callback);
   }
 
@@ -101,9 +101,9 @@ public abstract class AbstractRestClient implements RestClient {
 
   private abstract class JsonRequest extends HttpRequest {
 
-    private Callback<String> callback;
+    private Callback callback;
 
-    JsonRequest(String endpoint, Callback<String> callback) {
+    JsonRequest(String endpoint, Callback callback) {
       super(endpoint);
       this.callback = callback;
     }
@@ -120,7 +120,7 @@ public abstract class AbstractRestClient implements RestClient {
   }
 
   class GetRequest extends JsonRequest {
-    GetRequest(String endpoint, Callback<String> callback) {
+    GetRequest(String endpoint, Callback callback) {
       super(endpoint, callback);
     }
 
@@ -134,7 +134,7 @@ public abstract class AbstractRestClient implements RestClient {
 
     private final String method;
 
-    SimpleRequest(String method, String endpoint, Callback<String> callback) {
+    SimpleRequest(String method, String endpoint, Callback callback) {
       super(endpoint, callback);
       this.method = method;
     }
@@ -150,7 +150,7 @@ public abstract class AbstractRestClient implements RestClient {
     private final String data;
     private final String method;
 
-    JsonOutputRequest(String data, String endpoint, String method, Callback<String> callback) {
+    JsonOutputRequest(String data, String endpoint, String method, Callback callback) {
       super(endpoint, callback);
       this.data = data;
       this.method = method;
@@ -181,7 +181,7 @@ public abstract class AbstractRestClient implements RestClient {
     private final String method;
     private final String key;
 
-    PutFileRequest(File file, String key, String endpoint, String method, Callback<String> callback) {
+    PutFileRequest(File file, String key, String endpoint, String method, Callback callback) {
       super(endpoint, callback);
       this.file = file;
       this.method = method;
@@ -225,10 +225,10 @@ public abstract class AbstractRestClient implements RestClient {
 
   class GetFileRequest extends HttpRequest {
 
-    private final Callback<InputStream> callback;
-    private final Callback<String> onError;
+    private final InputStreamCallback callback;
+    private final Callback onError;
 
-    GetFileRequest(String endpoint, Callback<InputStream> callback, Callback<String> onError) {
+    GetFileRequest(String endpoint, InputStreamCallback callback, Callback onError) {
       super(endpoint);
       this.callback = callback;
       this.onError = onError;

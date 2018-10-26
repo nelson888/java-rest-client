@@ -1,7 +1,6 @@
 package com.tambapps.http.restclient;
 
 import java.io.File;
-import java.io.InputStream;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,28 +14,28 @@ public class AsyncRestClient extends AbstractRestClient {
   }
 
   @Override
-  public void fileUploadRequest(String method, String endPoint, File file, String key, Callback<String> callback) {
+  public void fileUploadRequest(String method, String endPoint, File file, String key, Callback callback) {
     executor.submit(new PutFileRequest(file, key, endPoint, method, callback));
   }
 
   @Override
-  public void getObject(String endPoint, Callback<String> callback) {
+  public void getObject(String endPoint, Callback callback) {
     executor.submit(new GetRequest(endPoint, callback));
   }
 
   @Override
-  public void simpleRequest(String method, String endPoint, Callback<String> callback) {
+  public void simpleRequest(String method, String endPoint, Callback callback) {
     executor.submit(new SimpleRequest(method, endPoint, callback));
   }
 
   @Override
-  public void outputRequest(String method, String endPoint, String jsonData, Callback<String> callback) {
+  public void outputRequest(String method, String endPoint, String jsonData, Callback callback) {
     executor.submit(new JsonOutputRequest(jsonData, endPoint, method, callback));
   }
 
   @Override
-  public void getFile(String endPoint, Callback<InputStream> callback,
-      Callback<String> onError) {
+  public void getFile(String endPoint, InputStreamCallback callback,
+      Callback onError) {
     executor.submit(new GetFileRequest(endPoint, callback, onError));
   }
 
