@@ -10,7 +10,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public abstract class AbstractRestClient implements RestClient {
+public abstract class AbstractRestClient implements OldRestClient {
 
   private static final String CONTENT_TYPE = "Content-Type";
   private static final String JSON_TYPE = "application/json";

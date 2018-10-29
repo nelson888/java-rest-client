@@ -1,40 +1,96 @@
 package com.tambapps.http.restclient;
 
-import java.io.File;
+import com.tambapps.http.restclient.request.RestRequest;
+import com.tambapps.http.restclient.request.handler.response.RestResponseHandler;
+import com.tambapps.http.restclient.response.RestResponse;
+
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-public interface RestClient {
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-  String PUT = "PUT";
-  String POST = "POST";
-  String DELETE = "DELETE";
+public class RestClient {
 
-  int REQUEST_NOT_COMPLETED = -1;
-
-  void getObject(String endPoint, Callback callback);
-  void simpleRequest(String method, String endPoint, Callback callback);
-  void outputRequest(String method, String endPoint, String jsonData, Callback callback);
-  void putObject(String endPoint, String jsonData, Callback callback);
-  void postObject(String endPoint, String jsonData, Callback callback);
-
-
-  //TODO to test
-  void getFile(String endPoint, InputStreamCallback callback, Callback onError);
-  void fileUploadRequest(String method, String endPoint, File file, Callback callback);
-  void fileUploadRequest(String method, String endPoint, File file, String key, Callback callback);
-  void putFile(String endPoint, File file, Callback callback);
-  void putFile(String endPoint, File file, String key, Callback callback);
-  void postFile(String endPoint, File file, Callback callback);
-
-  void setJwt(String jwt);
-  void removeJwt();
-
-  void shutdown();
-
-  interface Callback {
-    void onResponse(int responseCode, String data);
+  public interface Callback<T> {
+    void call(RestResponse<T> response);
   }
-  interface InputStreamCallback {
-    void onResponse(int responseCode, InputStream data);
+
+  private final String boundary =  "*****";
+  private final String crlf = "\r\n";
+  private final String twoHyphens = "--";
+
+  private final ExecutorService executor = Executors.newSingleThreadExecutor();
+  private final String baseUrl;
+  private String jwt = null;
+
+  public RestClient(String baseUrl) {
+    this.baseUrl = baseUrl;
   }
+
+  private URL getUrl(String endpoint) throws MalformedURLException {
+    if (baseUrl.endsWith("/")) {
+      return new URL(endpoint.startsWith("/") ? baseUrl + endpoint.substring(1) : baseUrl + endpoint);
+    }
+     else {
+       return new URL(baseUrl + (endpoint.startsWith("/") ? baseUrl + '/' + endpoint : baseUrl + '/' + endpoint));
+    }
+  }
+
+  private HttpURLConnection prepareConnection(RestRequest request) throws IOException {
+    HttpURLConnection connection= (HttpURLConnection) getUrl(request.getEndpoint()).openConnection();
+    connection.setRequestMethod(request.getMethod());
+    for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
+      connection.setRequestProperty(header.getKey(), header.getValue());
+    }
+    if (jwt != null) {
+      connection.setRequestProperty("Authorization", "Bearer " + jwt);
+    }
+
+    return connection;
+  }
+
+  public <T> RestResponse execute(RestRequest request, Callback<T> callback, RestResponseHandler<T> responseHandler) {
+    HttpURLConnection connection;
+    try {
+      connection = prepareConnection(request);
+      if (request.hasOutput()) {
+        request.getOutput().prepareConnection(connection);
+      }
+    } catch (IOException e) {
+      return new RestResponse(e);
+    }
+
+    try {
+      int responseCode = connection.getResponseCode();
+      RestResponse<T> response;
+      try (InputStream stream = IOUtils.isErrorCode(responseCode) ?
+          connection.getErrorStream() :
+          connection.getInputStream()) {
+        response = new RestResponse<>(responseCode, responseHandler.convert(stream));
+        callback.call(response);
+      }
+      return response;
+    } catch (IOException e) {
+      return new RestResponse(e);
+    } finally {
+      connection.disconnect();
+    }
+  }
+
+
+
+
+  public void setJwt(String jwt) {
+    this.jwt = jwt;
+  }
+
+  public void removeJwt() {
+    setJwt(null);
+  }
+
 }
