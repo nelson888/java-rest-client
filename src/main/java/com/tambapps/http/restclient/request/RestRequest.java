@@ -61,7 +61,7 @@ public class RestRequest {
     return new Builder();
   }
 
-  protected static class Builder {
+  public static class Builder {
 
     private final Map<String, String> headers = new HashMap<>();
     private String method = GET;
