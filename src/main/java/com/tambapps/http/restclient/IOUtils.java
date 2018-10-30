@@ -8,7 +8,10 @@ import java.io.OutputStream;
 
 public final class IOUtils {
 
-  private IOUtils() {}
+  public static int DEFAULT_BUFFER_SIZE = 1024;
+
+  private IOUtils() {
+  }
 
   public static String toString(InputStream stream) throws IOException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -21,16 +24,19 @@ public final class IOUtils {
   }
 
   public static boolean isErrorCode(int responseCode) {
-    return responseCode < 200 || responseCode>= 300;
+    return responseCode < 200 || responseCode >= 300;
   }
 
-
-  public static void copy(InputStream is, OutputStream os) throws IOException {
-    byte[] buffer = new byte[8 * 1024];
+  public static void copy(InputStream is, OutputStream os, int bufferSize) throws IOException {
+    byte[] buffer = new byte[bufferSize];
     int bytesRead;
     while ((bytesRead = is.read(buffer)) != -1) {
       os.write(buffer, 0, bytesRead);
     }
+  }
+
+  public static void copy(InputStream is, OutputStream os) throws IOException {
+    copy(is, os, DEFAULT_BUFFER_SIZE);
   }
 
 }

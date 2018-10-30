@@ -10,8 +10,8 @@ public class RestRequest {
 
   private static final String GET = "GET";
   private static final String PUT = "PUT";
-  static final String DELETE = "DELETE";
-  static final String POST = "POST";
+  private static final String DELETE = "DELETE";
+  private static final String POST = "POST";
 
   private final String endpoint;
   private final Map<String, String> headers;
@@ -19,7 +19,8 @@ public class RestRequest {
   private final Long timeout;
   private final RestOutputHandler outputHandler;
 
-  public RestRequest(String endpoint, Map<String, String> headers, String method, Long timeout, RestOutputHandler outputHandler) {
+  private RestRequest(String endpoint, Map<String, String> headers, String method, Long timeout,
+      RestOutputHandler outputHandler) {
     if (endpoint == null) {
       throw new IllegalArgumentException("URL cannot be null");
     }
@@ -31,6 +32,10 @@ public class RestRequest {
     this.method = method;
     this.timeout = timeout;
     this.outputHandler = outputHandler;
+  }
+
+  public static Builder builder() {
+    return new Builder();
   }
 
   public String getEndpoint() {
@@ -57,9 +62,6 @@ public class RestRequest {
     return outputHandler;
   }
 
-  public static Builder builder() {
-    return new Builder();
-  }
 
   public static class Builder {
 
@@ -110,7 +112,7 @@ public class RestRequest {
       return this;
     }
 
-    public Builder url(String endpoint)  {
+    public Builder url(String endpoint) {
       this.endpoint = endpoint;
       return this;
     }

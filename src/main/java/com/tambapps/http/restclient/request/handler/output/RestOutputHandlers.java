@@ -1,5 +1,7 @@
 package com.tambapps.http.restclient.request.handler.output;
 
+import com.tambapps.http.restclient.IOUtils;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +14,8 @@ public final class RestOutputHandlers {
   private static final String CONTENT_TYPE = "Content-Type";
   private static final String JSON_TYPE = "application/json";
 
-  private RestOutputHandlers() {}
+  private RestOutputHandlers() {
+  }
 
   public static RestOutputHandler string(String content) {
     return new StringOutputHandler(content);
@@ -22,8 +25,12 @@ public final class RestOutputHandlers {
     return new JsonOutputHandler(content);
   }
 
+  public static RestOutputHandler file(File file, String key, int bufferSize) {
+    return new FileOutputHandler(file, key, bufferSize);
+  }
+
   public static RestOutputHandler file(File file, String key) {
-    return new FileOutputHandler(file, key);
+    return file(file, key, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
   public static RestOutputHandler file(File file) {
@@ -40,6 +47,7 @@ public final class RestOutputHandlers {
 
     abstract void writeContent(URLConnection connection) throws IOException;
   }
+
 
   private static class StringOutputHandler extends AbstractOutputHandler {
 
@@ -58,6 +66,7 @@ public final class RestOutputHandlers {
     }
   }
 
+
   private static class JsonOutputHandler extends StringOutputHandler {
 
     private JsonOutputHandler(String content) {
@@ -72,17 +81,20 @@ public final class RestOutputHandlers {
     }
   }
 
+
   private static class FileOutputHandler extends AbstractOutputHandler {
 
-    private final String boundary =  "*****";
+    private final String boundary = "*****";
     private final String crlf = "\r\n";
     private final String twoHyphens = "--";
     private final File file;
     private final String key;
+    private final int bufferSize;
 
-    public FileOutputHandler(File file, String key) {
+    FileOutputHandler(File file, String key, int bufferSize) {
       this.file = file;
       this.key = key;
+      this.bufferSize = bufferSize;
     }
 
     @Override
@@ -105,10 +117,7 @@ public final class RestOutputHandlers {
             fileName + "\"" + crlf);
         request.writeBytes(crlf);
         try (FileInputStream is = new FileInputStream(file)) {
-          int b;
-          while ((b = is.read()) != -1) {
-            request.write(b);
-          }
+          IOUtils.copy(is, request, bufferSize);
         }
         request.writeBytes(crlf);
         request.writeBytes(twoHyphens + boundary + twoHyphens + crlf);

@@ -16,14 +16,9 @@ import java.util.concurrent.Executors;
 
 public class RestClient {
 
-  public interface Callback<T> {
-    void call(RestResponse<T> response);
-  }
-
   private final ExecutorService executor = Executors.newSingleThreadExecutor();
   private final String baseUrl;
   private String jwt = null;
-
   public RestClient(String baseUrl) {
     this.baseUrl = baseUrl;
   }
@@ -90,13 +85,16 @@ public class RestClient {
     });
   }
 
-
   public void setJwt(String jwt) {
     this.jwt = jwt;
   }
 
   public void removeJwt() {
     setJwt(null);
+  }
+
+  public interface Callback<T> {
+    void call(RestResponse<T> response);
   }
 
 }
