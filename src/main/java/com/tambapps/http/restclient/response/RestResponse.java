@@ -22,7 +22,7 @@ public class RestResponse<T> {
     return e == null;
   }
 
-  public boolean isErrorCode(int responseCode) {
+  public boolean isErrorCode() {
     return IOUtils.isErrorCode(responseCode);
   }
 
