@@ -15,6 +15,7 @@ public class RestResponse<T> {
 
   public RestResponse(Exception e) {
     this.e = e;
+    responseCode = -1;
   }
 
   public boolean isSuccessful() {

@@ -20,10 +20,6 @@ public class RestClient {
     void call(RestResponse<T> response);
   }
 
-  private final String boundary =  "*****";
-  private final String crlf = "\r\n";
-  private final String twoHyphens = "--";
-
   private final ExecutorService executor = Executors.newSingleThreadExecutor();
   private final String baseUrl;
   private String jwt = null;
@@ -34,15 +30,18 @@ public class RestClient {
 
   private URL getUrl(String endpoint) throws MalformedURLException {
     if (baseUrl.endsWith("/")) {
-      return new URL(endpoint.startsWith("/") ? baseUrl + endpoint.substring(1) : baseUrl + endpoint);
-    }
-     else {
-       return new URL(baseUrl + (endpoint.startsWith("/") ? baseUrl + '/' + endpoint : baseUrl + '/' + endpoint));
+      return new URL(
+          endpoint.startsWith("/") ? baseUrl + endpoint.substring(1) : baseUrl + endpoint);
+    } else {
+      return new URL(baseUrl + (endpoint.startsWith("/") ?
+          baseUrl + '/' + endpoint :
+          baseUrl + '/' + endpoint));
     }
   }
 
   private HttpURLConnection prepareConnection(RestRequest request) throws IOException {
-    HttpURLConnection connection= (HttpURLConnection) getUrl(request.getEndpoint()).openConnection();
+    HttpURLConnection connection =
+        (HttpURLConnection) getUrl(request.getEndpoint()).openConnection();
     connection.setRequestMethod(request.getMethod());
     for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
       connection.setRequestProperty(header.getKey(), header.getValue());
@@ -50,11 +49,10 @@ public class RestClient {
     if (jwt != null) {
       connection.setRequestProperty("Authorization", "Bearer " + jwt);
     }
-
     return connection;
   }
 
-  public <T> RestResponse execute(RestRequest request, Callback<T> callback, RestResponseHandler<T> responseHandler) {
+  public <T> RestResponse<T> execute(RestRequest request, RestResponseHandler<T> responseHandler) {
     HttpURLConnection connection;
     try {
       connection = prepareConnection(request);
@@ -62,7 +60,7 @@ public class RestClient {
         request.getOutput().prepareConnection(connection);
       }
     } catch (IOException e) {
-      return new RestResponse(e);
+      return new RestResponse<>(e);
     }
 
     try {
@@ -72,17 +70,25 @@ public class RestClient {
           connection.getErrorStream() :
           connection.getInputStream()) {
         response = new RestResponse<>(responseCode, responseHandler.convert(stream));
-        callback.call(response);
       }
       return response;
     } catch (IOException e) {
-      return new RestResponse(e);
+      return new RestResponse<>(e);
     } finally {
       connection.disconnect();
     }
   }
 
-
+  public <T> void executeAsync(final RestRequest request,
+      final RestResponseHandler<T> responseHandler, final Callback<T> callback) {
+    executor.submit(new Runnable() {
+      @Override
+      public void run() {
+        RestResponse<T> response = execute(request, responseHandler);
+        callback.call(response);
+      }
+    });
+  }
 
 
   public void setJwt(String jwt) {
