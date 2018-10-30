@@ -34,7 +34,7 @@ public class RestClient {
           endpoint.startsWith("/") ? baseUrl + endpoint.substring(1) : baseUrl + endpoint);
     } else {
       return new URL(baseUrl + (endpoint.startsWith("/") ?
-          baseUrl + '/' + endpoint :
+          baseUrl + endpoint :
           baseUrl + '/' + endpoint));
     }
   }
