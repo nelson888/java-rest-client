@@ -25,16 +25,16 @@ public final class RestOutputHandlers {
     return new JsonOutputHandler(content);
   }
 
-  public static RestOutputHandler file(File file, String key, int bufferSize) {
-    return new FileOutputHandler(file, key, bufferSize);
+  public static RestOutputHandler multipartFile(File file, String key, int bufferSize) {
+    return new MultipartFileOutputHandler(file, key, bufferSize);
   }
 
-  public static RestOutputHandler file(File file, String key) {
-    return file(file, key, IOUtils.DEFAULT_BUFFER_SIZE);
+  public static RestOutputHandler multipartFile(File file, String key) {
+    return multipartFile(file, key, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
-  public static RestOutputHandler file(File file) {
-    return file(file, file.getName());
+  public static RestOutputHandler multipartFile(File file) {
+    return multipartFile(file, file.getName());
   }
 
   private abstract static class AbstractOutputHandler implements RestOutputHandler {
@@ -47,7 +47,6 @@ public final class RestOutputHandlers {
 
     abstract void writeContent(URLConnection connection) throws IOException;
   }
-
 
   private static class StringOutputHandler extends AbstractOutputHandler {
 
@@ -66,7 +65,6 @@ public final class RestOutputHandlers {
     }
   }
 
-
   private static class JsonOutputHandler extends StringOutputHandler {
 
     private JsonOutputHandler(String content) {
@@ -81,8 +79,7 @@ public final class RestOutputHandlers {
     }
   }
 
-
-  private static class FileOutputHandler extends AbstractOutputHandler {
+  private static class MultipartFileOutputHandler extends AbstractOutputHandler {
 
     private final String boundary = "*****";
     private final String crlf = "\r\n";
@@ -91,7 +88,7 @@ public final class RestOutputHandlers {
     private final String key;
     private final int bufferSize;
 
-    FileOutputHandler(File file, String key, int bufferSize) {
+    MultipartFileOutputHandler(File file, String key, int bufferSize) {
       this.file = file;
       this.key = key;
       this.bufferSize = bufferSize;

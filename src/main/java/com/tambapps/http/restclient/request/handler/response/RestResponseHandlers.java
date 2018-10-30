@@ -20,17 +20,16 @@ public final class RestResponseHandlers {
   private RestResponseHandlers() {
   }
 
-
   public static RestResponseHandler<String> stringHandler() {
     return STRING_HANDLER;
   }
 
-  public static RestResponseHandler<File> fileHandler(File file) {
-    return fileHandler(file, IOUtils.DEFAULT_BUFFER_SIZE);
+  public static RestResponseHandler<File> multipartFileHandler(File file) {
+    return multipartFileHandler(file, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
-
-  public static RestResponseHandler<File> fileHandler(final File file, final int bufferSize) {
+  public static RestResponseHandler<File> multipartFileHandler(final File file,
+      final int bufferSize) {
     return new RestResponseHandler<File>() {
       @Override
       public File convert(InputStream inputStream) throws IOException {
@@ -42,11 +41,12 @@ public final class RestResponseHandlers {
     };
   }
 
-  public static RestResponseHandler<File> fileHandler(String filePath) {
-    return fileHandler(filePath, IOUtils.DEFAULT_BUFFER_SIZE);
+  public static RestResponseHandler<File> multipartFileHandler(String filePath) {
+    return multipartFileHandler(filePath, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
-  public static RestResponseHandler<File> fileHandler(final String filePath, final int bufferSize) {
+  public static RestResponseHandler<File> multipartFileHandler(final String filePath,
+      final int bufferSize) {
     return new RestResponseHandler<File>() {
       @Override
       public File convert(InputStream inputStream) throws IOException {
