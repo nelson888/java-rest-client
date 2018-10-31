@@ -112,7 +112,7 @@ public class RestRequest {
       return this;
     }
 
-    public Builder url(String endpoint) {
+    public Builder endpoint(String endpoint) {
       this.endpoint = endpoint;
       return this;
     }
