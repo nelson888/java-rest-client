@@ -16,10 +16,10 @@ public class RestRequest {
   private final String endpoint;
   private final Map<String, String> headers;
   private final String method;
-  private final Long timeout;
+  private final Integer timeout;
   private final RestOutputHandler outputHandler;
 
-  private RestRequest(String endpoint, Map<String, String> headers, String method, Long timeout,
+  private RestRequest(String endpoint, Map<String, String> headers, String method, Integer timeout,
       RestOutputHandler outputHandler) {
     if (endpoint == null) {
       throw new IllegalArgumentException("URL cannot be null");
@@ -46,7 +46,7 @@ public class RestRequest {
     return method;
   }
 
-  public Long getTimeout() {
+  public Integer getTimeout() {
     return timeout;
   }
 
@@ -62,16 +62,15 @@ public class RestRequest {
     return outputHandler;
   }
 
-
   public static class Builder {
 
     private final Map<String, String> headers = new HashMap<>();
     private String method = GET;
-    private Long timeout = null;
+    private Integer timeout = null;
     private String endpoint = null;
     private RestOutputHandler outputHandler;
 
-    public Builder timeout(long duration) {
+    public Builder timeout(Integer duration) {
       timeout = duration;
       return this;
     }

@@ -19,11 +19,18 @@ import java.util.concurrent.Executors;
 
 public class RestClient {
 
-  private final ExecutorService executor = Executors.newSingleThreadExecutor();
+  private ExecutorService executor;
   private final String baseUrl;
+  private final int nbThreads ;
   private String jwt = null;
-  public RestClient(String baseUrl) {
+
+  public RestClient(String baseUrl, int nbThreads) {
     this.baseUrl = baseUrl;
+    this.nbThreads = nbThreads;
+  }
+
+  public RestClient(String baseUrl) {
+    this(baseUrl, 1);
   }
 
   private URL getUrl(String endpoint) throws MalformedURLException {
@@ -46,6 +53,9 @@ public class RestClient {
     }
     if (jwt != null) {
       connection.setRequestProperty("Authorization", "Bearer " + jwt);
+    }
+    if (request.getTimeout() != null) {
+      connection.setConnectTimeout(request.getTimeout());
     }
     return connection;
   }
@@ -81,6 +91,9 @@ public class RestClient {
 
   public <T> void executeAsync(final RestRequest request,
       final RestResponseHandler<T> responseHandler, final Callback<T> callback) {
+    if (executor == null) {
+      executor = Executors.newFixedThreadPool(nbThreads);
+    }
     executor.submit(new Runnable() {
       @Override
       public void run() {

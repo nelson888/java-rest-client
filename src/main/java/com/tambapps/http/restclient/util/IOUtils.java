@@ -44,7 +44,6 @@ public final class IOUtils {
     return toByteArray(is, DEFAULT_BUFFER_SIZE);
   }
 
-
   public static BytesContainer toByteArray(InputStream is, int bufferSize) throws IOException {
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
