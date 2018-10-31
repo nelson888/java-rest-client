@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,17 +60,19 @@ public class RestClient {
       return new RestResponse<>(e);
     }
 
+    Map<String, List<String>> responseHeaders = new HashMap<>();
     try {
       int responseCode = connection.getResponseCode();
+      responseHeaders.putAll(connection.getHeaderFields());
       RestResponse<T> response;
       try (InputStream stream = IOUtils.isErrorCode(responseCode) ?
           connection.getErrorStream() :
           connection.getInputStream()) {
-        response = new RestResponse<>(responseCode, responseHandler.convert(stream));
+        response = new RestResponse<>(responseCode, responseHandler.convert(stream), responseHeaders);
       }
       return response;
     } catch (IOException e) {
-      return new RestResponse<>(e);
+      return new RestResponse<>(e, responseHeaders);
     } finally {
       connection.disconnect();
     }
