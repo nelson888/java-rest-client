@@ -1,6 +1,7 @@
 package com.tambapps.http.restclient.request.handler.response;
 
-import com.tambapps.http.restclient.IOUtils;
+import com.tambapps.http.restclient.util.BytesContainer;
+import com.tambapps.http.restclient.util.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,13 +16,26 @@ public final class RestResponseHandlers {
         public String convert(InputStream inputStream) throws IOException {
           return IOUtils.toString(inputStream);
         }
-      };
+  };
+
+  private static final RestResponseHandler<BytesContainer> BYTES_HANDLER =
+      new RestResponseHandler<BytesContainer>() {
+        @Override
+        public BytesContainer convert(InputStream inputStream) throws IOException {
+          return IOUtils.toByteArray(inputStream);
+        }
+  };
+
 
   private RestResponseHandlers() {
   }
 
   public static RestResponseHandler<String> stringHandler() {
     return STRING_HANDLER;
+  }
+
+  public static RestResponseHandler<BytesContainer> bytesHandler() {
+    return BYTES_HANDLER;
   }
 
   public static RestResponseHandler<File> multipartFileHandler(File file) {

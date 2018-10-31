@@ -1,6 +1,6 @@
 package com.tambapps.http.restclient.response;
 
-import com.tambapps.http.restclient.IOUtils;
+import com.tambapps.http.restclient.util.IOUtils;
 
 import java.util.Collections;
 import java.util.List;

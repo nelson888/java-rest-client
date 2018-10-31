@@ -3,6 +3,7 @@ package com.tambapps.http.restclient;
 import com.tambapps.http.restclient.request.RestRequest;
 import com.tambapps.http.restclient.request.handler.response.RestResponseHandler;
 import com.tambapps.http.restclient.response.RestResponse;
+import com.tambapps.http.restclient.util.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

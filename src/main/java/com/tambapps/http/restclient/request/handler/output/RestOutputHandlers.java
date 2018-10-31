@@ -1,6 +1,6 @@
 package com.tambapps.http.restclient.request.handler.output;
 
-import com.tambapps.http.restclient.IOUtils;
+import com.tambapps.http.restclient.util.IOUtils;
 
 import java.io.DataOutputStream;
 import java.io.File;

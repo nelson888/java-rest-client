@@ -1,6 +1,7 @@
-package com.tambapps.http.restclient;
+package com.tambapps.http.restclient.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,6 +38,24 @@ public final class IOUtils {
 
   public static void copy(InputStream is, OutputStream os) throws IOException {
     copy(is, os, DEFAULT_BUFFER_SIZE);
+  }
+
+  public static BytesContainer toByteArray(InputStream is) throws IOException {
+    return toByteArray(is, DEFAULT_BUFFER_SIZE);
+  }
+
+
+  public static BytesContainer toByteArray(InputStream is, int bufferSize) throws IOException {
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+    int nRead;
+    byte[] data = new byte[bufferSize];
+
+    while ((nRead = is.read(data, 0, data.length)) != -1) {
+      buffer.write(data, 0, nRead);
+    }
+
+    return new BytesContainer(buffer.toByteArray());
   }
 
 }
