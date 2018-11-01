@@ -3,6 +3,7 @@ package com.tambapps.http.restclient;
 import com.tambapps.http.restclient.request.RestRequest;
 import com.tambapps.http.restclient.request.handler.response.RestResponseHandler;
 import com.tambapps.http.restclient.response.RestResponse;
+import com.tambapps.http.restclient.response.RestResponse2;
 import com.tambapps.http.restclient.util.IOUtils;
 
 import java.io.IOException;
@@ -61,6 +62,13 @@ public class RestClient {
   }
 
   public <T> RestResponse<T> execute(RestRequest request, RestResponseHandler<T> responseHandler) {
+    RestResponse2<T, T> response2 =  execute(request, responseHandler, responseHandler);
+    return new RestResponse<>(response2);
+  }
+
+  public <SuccessT, ErrorT> RestResponse2<SuccessT, ErrorT> execute(RestRequest request,
+                                                                    RestResponseHandler<SuccessT> successResponseHandler,
+                                                                    RestResponseHandler<ErrorT> errorResponseHandler) {
     HttpURLConnection connection;
     try {
       connection = prepareConnection(request);
@@ -68,36 +76,44 @@ public class RestClient {
         request.getOutput().prepareConnection(connection);
       }
     } catch (IOException e) {
-      return new RestResponse<>(e);
+      return new RestResponse2<>(e);
     }
 
     Map<String, List<String>> responseHeaders = new HashMap<>();
     try {
       int responseCode = connection.getResponseCode();
       responseHeaders.putAll(connection.getHeaderFields());
-      RestResponse<T> response;
-      try (InputStream stream = IOUtils.isErrorCode(responseCode) ?
+      RestResponse2<SuccessT, ErrorT> response;
+      boolean isErrorCode = IOUtils.isErrorCode(responseCode);
+      RestResponseHandler<?> responseHandler = isErrorCode ? errorResponseHandler : successResponseHandler;
+      try (InputStream stream = isErrorCode ?
           connection.getErrorStream() :
           connection.getInputStream()) {
-        response = new RestResponse<>(responseCode, responseHandler.convert(stream), responseHeaders);
+        response = new RestResponse2<>(responseCode, responseHandler.convert(stream), responseHeaders);
       }
       return response;
     } catch (IOException e) {
-      return new RestResponse<>(e, responseHeaders);
+      return new RestResponse2<>(e, responseHeaders);
     } finally {
       connection.disconnect();
     }
   }
 
   public <T> void executeAsync(final RestRequest request,
-      final RestResponseHandler<T> responseHandler, final Callback<T> callback) {
+                               final RestResponseHandler<T> responseHandler, final Callback<T> callback) {
+    executeAsync(request, responseHandler, responseHandler, callback);
+  }
+  public <SuccessT, ErrorT> void executeAsync(final RestRequest request,
+                                              final RestResponseHandler<SuccessT> successResponseHandler,
+                                              final RestResponseHandler<ErrorT> errorResponseHandler,
+                                              final Callback2<SuccessT, ErrorT> callback) {
     if (executor == null) {
       executor = Executors.newFixedThreadPool(nbThreads);
     }
     executor.submit(new Runnable() {
       @Override
       public void run() {
-        RestResponse<T> response = execute(request, responseHandler);
+        RestResponse2<SuccessT, ErrorT> response = execute(request, successResponseHandler, errorResponseHandler);
         callback.call(response);
       }
     });
@@ -111,8 +127,15 @@ public class RestClient {
     setJwt(null);
   }
 
-  public interface Callback<T> {
-    void call(RestResponse<T> response);
+  public interface Callback2<SuccessT, ErrorT> {
+    void call(RestResponse2<SuccessT, ErrorT> response);
   }
 
+  public interface Callback<T> extends Callback2<T, T> { }
+
+  public void shutDown() {
+    if (executor != null) {
+      executor.shutdown();
+    }
+  }
 }
