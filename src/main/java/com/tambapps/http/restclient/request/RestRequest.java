@@ -1,6 +1,6 @@
 package com.tambapps.http.restclient.request;
 
-import com.tambapps.http.restclient.request.handler.output.RestOutputHandler;
+import com.tambapps.http.restclient.request.handler.output.BodyHandler;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,10 +17,10 @@ public class RestRequest {
   private final Map<String, String> headers;
   private final String method;
   private final Integer timeout;
-  private final RestOutputHandler outputHandler;
+  private final BodyHandler bodyHandler;
 
   private RestRequest(String endpoint, Map<String, String> headers, String method, Integer timeout,
-      RestOutputHandler outputHandler) {
+      BodyHandler bodyHandler) {
     if (endpoint == null) {
       throw new IllegalArgumentException("URL cannot be null");
     }
@@ -31,7 +31,7 @@ public class RestRequest {
     this.headers = Collections.unmodifiableMap(headers);
     this.method = method;
     this.timeout = timeout;
-    this.outputHandler = outputHandler;
+    this.bodyHandler = bodyHandler;
   }
 
   public static Builder builder() {
@@ -55,11 +55,11 @@ public class RestRequest {
   }
 
   public boolean hasOutput() {
-    return outputHandler != null;
+    return bodyHandler != null;
   }
 
-  public RestOutputHandler getOutput() {
-    return outputHandler;
+  public BodyHandler getOutput() {
+    return bodyHandler;
   }
 
   public static class Builder {
@@ -68,7 +68,7 @@ public class RestRequest {
     private String method = GET;
     private Integer timeout = null;
     private String endpoint = null;
-    private RestOutputHandler outputHandler;
+    private BodyHandler bodyHandler;
 
     public Builder timeout(Integer duration) {
       timeout = duration;
@@ -96,8 +96,8 @@ public class RestRequest {
       return method(POST);
     }
 
-    public Builder output(RestOutputHandler outputHandler) {
-      this.outputHandler = outputHandler;
+    public Builder output(BodyHandler bodyHandler) {
+      this.bodyHandler = bodyHandler;
       return this;
     }
 
@@ -117,7 +117,7 @@ public class RestRequest {
     }
 
     public RestRequest build() {
-      return new RestRequest(endpoint, headers, method, timeout, outputHandler);
+      return new RestRequest(endpoint, headers, method, timeout, bodyHandler);
     }
   }
 

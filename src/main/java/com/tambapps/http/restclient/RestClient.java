@@ -1,7 +1,7 @@
 package com.tambapps.http.restclient;
 
 import com.tambapps.http.restclient.request.RestRequest;
-import com.tambapps.http.restclient.request.handler.response.RestResponseHandler;
+import com.tambapps.http.restclient.request.handler.response.ResponseHandler;
 import com.tambapps.http.restclient.response.RestResponse;
 import com.tambapps.http.restclient.response.RestResponse2;
 import com.tambapps.http.restclient.util.IOUtils;
@@ -61,14 +61,14 @@ public class RestClient {
     return connection;
   }
 
-  public <T> RestResponse<T> execute(RestRequest request, RestResponseHandler<T> responseHandler) {
+  public <T> RestResponse<T> execute(RestRequest request, ResponseHandler<T> responseHandler) {
     RestResponse2<T, T> response2 =  execute(request, responseHandler, responseHandler);
     return new RestResponse<>(response2);
   }
 
   public <SuccessT, ErrorT> RestResponse2<SuccessT, ErrorT> execute(RestRequest request,
-                                                                    RestResponseHandler<SuccessT> successResponseHandler,
-                                                                    RestResponseHandler<ErrorT> errorResponseHandler) {
+                                                                    ResponseHandler<SuccessT> successResponseHandler,
+                                                                    ResponseHandler<ErrorT> errorResponseHandler) {
     HttpURLConnection connection;
     try {
       connection = prepareConnection(request);
@@ -85,7 +85,7 @@ public class RestClient {
       responseHeaders.putAll(connection.getHeaderFields());
       RestResponse2<SuccessT, ErrorT> response;
       boolean isErrorCode = IOUtils.isErrorCode(responseCode);
-      RestResponseHandler<?> responseHandler = isErrorCode ? errorResponseHandler : successResponseHandler;
+      ResponseHandler<?> responseHandler = isErrorCode ? errorResponseHandler : successResponseHandler;
       try (InputStream stream = isErrorCode ?
           connection.getErrorStream() :
           connection.getInputStream()) {
@@ -100,12 +100,12 @@ public class RestClient {
   }
 
   public <T> void executeAsync(final RestRequest request,
-                               final RestResponseHandler<T> responseHandler, final Callback<T> callback) {
+                               final ResponseHandler<T> responseHandler, final Callback<T> callback) {
     executeAsync(request, responseHandler, responseHandler, callback);
   }
   public <SuccessT, ErrorT> void executeAsync(final RestRequest request,
-                                              final RestResponseHandler<SuccessT> successResponseHandler,
-                                              final RestResponseHandler<ErrorT> errorResponseHandler,
+                                              final ResponseHandler<SuccessT> successResponseHandler,
+                                              final ResponseHandler<ErrorT> errorResponseHandler,
                                               final Callback2<SuccessT, ErrorT> callback) {
     if (executor == null) {
       executor = Executors.newFixedThreadPool(nbThreads);
