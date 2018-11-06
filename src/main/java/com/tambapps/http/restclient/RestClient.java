@@ -3,7 +3,6 @@ package com.tambapps.http.restclient;
 import com.tambapps.http.restclient.request.RestRequest;
 import com.tambapps.http.restclient.request.handler.response.ResponseHandler;
 import com.tambapps.http.restclient.response.RestResponse;
-import com.tambapps.http.restclient.response.RestResponse2;
 import com.tambapps.http.restclient.util.IOUtils;
 
 import java.io.IOException;
@@ -61,14 +60,13 @@ public class RestClient {
     return connection;
   }
 
-  public <T> RestResponse<T> execute(RestRequest request, ResponseHandler<T> responseHandler) {
-    RestResponse2<T, T> response2 =  execute(request, responseHandler, responseHandler);
-    return new RestResponse<>(response2);
+  public <T> RestResponse<T, T> execute(RestRequest request, ResponseHandler<T> responseHandler) {
+    return execute(request, responseHandler, responseHandler);
   }
 
-  public <SuccessT, ErrorT> RestResponse2<SuccessT, ErrorT> execute(RestRequest request,
-                                                                    ResponseHandler<SuccessT> successResponseHandler,
-                                                                    ResponseHandler<ErrorT> errorResponseHandler) {
+  public <SuccessT, ErrorT> RestResponse<SuccessT, ErrorT> execute(RestRequest request,
+                                                                   ResponseHandler<SuccessT> successResponseHandler,
+                                                                   ResponseHandler<ErrorT> errorResponseHandler) {
     HttpURLConnection connection;
     try {
       connection = prepareConnection(request);
@@ -76,44 +74,44 @@ public class RestClient {
         request.getOutput().prepareConnection(connection);
       }
     } catch (IOException e) {
-      return new RestResponse2<>(e);
+      return new RestResponse<>(e);
     }
 
     Map<String, List<String>> responseHeaders = new HashMap<>();
     try {
       int responseCode = connection.getResponseCode();
       responseHeaders.putAll(connection.getHeaderFields());
-      RestResponse2<SuccessT, ErrorT> response;
+      RestResponse<SuccessT, ErrorT> response;
       boolean isErrorCode = IOUtils.isErrorCode(responseCode);
       ResponseHandler<?> responseHandler = isErrorCode ? errorResponseHandler : successResponseHandler;
       try (InputStream stream = isErrorCode ?
           connection.getErrorStream() :
           connection.getInputStream()) {
-        response = new RestResponse2<>(responseCode, responseHandler.convert(stream), responseHeaders);
+        response = new RestResponse<>(responseCode, responseHandler.convert(stream), responseHeaders);
       }
       return response;
     } catch (IOException e) {
-      return new RestResponse2<>(e, responseHeaders);
+      return new RestResponse<>(e, responseHeaders);
     } finally {
       connection.disconnect();
     }
   }
 
   public <T> void executeAsync(final RestRequest request,
-                               final ResponseHandler<T> responseHandler, final Callback<T> callback) {
+                               final ResponseHandler<T> responseHandler, final Callback<T, T> callback) {
     executeAsync(request, responseHandler, responseHandler, callback);
   }
   public <SuccessT, ErrorT> void executeAsync(final RestRequest request,
                                               final ResponseHandler<SuccessT> successResponseHandler,
                                               final ResponseHandler<ErrorT> errorResponseHandler,
-                                              final Callback2<SuccessT, ErrorT> callback) {
+                                              final Callback<SuccessT, ErrorT> callback) {
     if (executor == null) {
       executor = Executors.newFixedThreadPool(nbThreads);
     }
     executor.submit(new Runnable() {
       @Override
       public void run() {
-        RestResponse2<SuccessT, ErrorT> response = execute(request, successResponseHandler, errorResponseHandler);
+        RestResponse<SuccessT, ErrorT> response = execute(request, successResponseHandler, errorResponseHandler);
         callback.call(response);
       }
     });
@@ -127,11 +125,9 @@ public class RestClient {
     setJwt(null);
   }
 
-  public interface Callback2<SuccessT, ErrorT> {
-    void call(RestResponse2<SuccessT, ErrorT> response);
+  public interface Callback<SuccessT, ErrorT> {
+    void call(RestResponse<SuccessT, ErrorT> response);
   }
-
-  public interface Callback<T> extends Callback2<T, T> { }
 
   public void shutDown() {
     if (executor != null) {

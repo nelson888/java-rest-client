@@ -26,12 +26,23 @@ public final class ResponseHandlers {
         }
   };
 
+  private static final ResponseHandler<Integer> INT_HANDLER =
+          new ResponseHandler<Integer>() {
+            @Override
+            public Integer convert(InputStream inputStream) throws IOException {
+              return Integer.parseInt(STRING_HANDLER.convert(inputStream));
+            }
+  };
 
   private ResponseHandlers() {
   }
 
   public static ResponseHandler<String> stringHandler() {
     return STRING_HANDLER;
+  }
+
+  public static ResponseHandler<Integer> intHandler() {
+    return INT_HANDLER;
   }
 
   public static ResponseHandler<BytesContainer> bytesHandler() {
