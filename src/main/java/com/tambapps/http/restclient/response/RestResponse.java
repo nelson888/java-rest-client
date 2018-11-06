@@ -59,7 +59,7 @@ public class RestResponse<SuccessT, ErrorT> {
     return e;
   }
 
-  protected Object getData() {
+  public Object getData() {
     return data;
   }
 
