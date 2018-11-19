@@ -100,7 +100,7 @@ public class RestClientTest {
   }
 
   @Test
-  public void postTest() {
+  public void postTest() throws InterruptedException {
     final Post post = new Post(0, 43, "title", "body");
     RestRequest request = RestRequest.builder("posts/")
         .POST()
@@ -117,6 +117,7 @@ public class RestClientTest {
 
     RestResponse<Post, ?> response = client.execute(request, RESPONSE_HANDLER);
     postAsserts(response, post);
+    assertTrue("Should be true", latch.await(TIMEOUT, TimeUnit.SECONDS));
   }
 
   private void postAsserts(RestResponse<Post, ?> response, Post post) {
@@ -129,7 +130,7 @@ public class RestClientTest {
   }
 
   @Test
-  public void deleteTest() {
+  public void deleteTest() throws InterruptedException {
     RestRequest request = RestRequest.builder("posts/2")
         .DELETE()
         .build();
@@ -144,6 +145,7 @@ public class RestClientTest {
         .DELETE()
         .build(), RESPONSE_HANDLER);
     deleteAsserts(response);
+    assertTrue("Should be true", latch.await(TIMEOUT, TimeUnit.SECONDS));
   }
 
   private void deleteAsserts(RestResponse<Post, ?> response) {
@@ -152,7 +154,7 @@ public class RestClientTest {
   }
 
   @Test
-  public void deleteNotFoundTest() {
+  public void deleteNotFoundTest() throws InterruptedException {
     RestRequest request = RestRequest.builder("posts/1456846854665")
         .DELETE()
         .build();
@@ -166,6 +168,7 @@ public class RestClientTest {
     RestResponse<Post, ?> response = client.execute(request, RESPONSE_HANDLER);
 
     deleteNotFoundAsserts(response);
+    assertTrue("Should be true", latch.await(TIMEOUT, TimeUnit.SECONDS));
   }
 
   private void deleteNotFoundAsserts(RestResponse<Post, ?> response) {
