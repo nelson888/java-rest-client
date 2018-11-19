@@ -34,8 +34,8 @@ public class RestRequest {
     this.bodyHandler = bodyHandler;
   }
 
-  public static Builder builder() {
-    return new Builder();
+  public static Builder builder(String endpoint) {
+    return new Builder(endpoint);
   }
 
   public String getEndpoint() {
@@ -65,10 +65,15 @@ public class RestRequest {
   public static class Builder {
 
     private final Map<String, String> headers = new HashMap<>();
+    private final String endpoint;
     private String method = GET;
     private Integer timeout = null;
-    private String endpoint = null;
+
     private BodyHandler bodyHandler;
+
+    public Builder(String endpoint) {
+      this.endpoint = endpoint;
+    }
 
     public Builder timeout(Integer duration) {
       timeout = duration;
@@ -108,11 +113,6 @@ public class RestRequest {
 
     public Builder headers(Map<String, String> headers) {
       this.headers.putAll(headers);
-      return this;
-    }
-
-    public Builder endpoint(String endpoint) {
-      this.endpoint = endpoint;
       return this;
     }
 

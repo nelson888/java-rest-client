@@ -75,7 +75,7 @@ public final class BodyHandlers {
     public void writeContent(URLConnection connection) throws IOException {
       connection.setRequestProperty("Accept", JSON_TYPE);
       connection.setRequestProperty(CONTENT_TYPE, JSON_TYPE);
-      super.prepareConnection(connection);
+      super.writeContent(connection);
     }
   }
 
