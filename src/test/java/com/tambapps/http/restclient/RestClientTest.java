@@ -158,14 +158,16 @@ public class RestClientTest {
     RestRequest request = RestRequest.builder("posts/1456846854665")
         .DELETE()
         .build();
-    client.executeAsync(request, RESPONSE_HANDLER, new RestClient.Callback<Post, Post>() {
-      @Override
-      public void call(RestResponse<Post, Post> response) {
-        deleteNotFoundAsserts(response);
-        latch.countDown();
-      }
-    });
-    RestResponse<Post, ?> response = client.execute(request, RESPONSE_HANDLER);
+    client.executeAsync(request, RESPONSE_HANDLER, ResponseHandlers.stringHandler(),
+        new RestClient.Callback<Post, String>() {
+          @Override
+          public void call(RestResponse<Post, String> response) {
+            deleteNotFoundAsserts(response);
+            latch.countDown();
+          }
+        });
+    RestResponse<Post, String> response = client.execute(request, RESPONSE_HANDLER,
+        ResponseHandlers.stringHandler());
 
     deleteNotFoundAsserts(response);
     assertTrue("Should be true", latch.await(TIMEOUT, TimeUnit.SECONDS));
@@ -175,6 +177,7 @@ public class RestClientTest {
     assertTrue("Shouldn't be successful", response.isSuccessful());
     assertTrue("Should be an error code", response.isErrorResponse());
     assertEquals("Should be equal", 404, response.getResponseCode());
+    assertNotNull("Shouldn't be null", response.getErrorData());
   }
 
 }
