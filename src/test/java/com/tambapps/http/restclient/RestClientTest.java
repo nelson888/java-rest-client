@@ -33,7 +33,7 @@ public class RestClientTest {
   private static final ResponseHandler<Post> RESPONSE_HANDLER =
       ResponseHandlers.objectHandler(Post.class, JSON_PARSER);
 
-  private final RestClient client = new RestClient(API_URL, 1);
+  private final RestClient client = new RestClient(API_URL);
   private CountDownLatch latch; //allows to wait until async code is executed
 
   @Before
