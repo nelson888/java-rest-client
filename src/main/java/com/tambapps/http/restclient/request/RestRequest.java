@@ -75,8 +75,8 @@ public class RestRequest {
       this.endpoint = endpoint;
     }
 
-    public Builder timeout(Integer duration) {
-      timeout = duration;
+    public Builder timeout(Integer durationInMillis) {
+      timeout = durationInMillis;
       return this;
     }
 
