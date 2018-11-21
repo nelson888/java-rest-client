@@ -50,6 +50,10 @@ public final class ResponseHandlers {
     return BYTES_HANDLER;
   }
 
+  public static ResponseHandler<BytesContainer> multipartBytesHandler() {
+    return bytesHandler();
+  }
+
   public static ResponseHandler<File> multipartFileHandler(File file) {
     return multipartFileHandler(file, IOUtils.DEFAULT_BUFFER_SIZE);
   }
