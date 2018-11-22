@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class RestRequest {
 
-  private static final String GET = "GET";
-  private static final String PUT = "PUT";
-  private static final String DELETE = "DELETE";
-  private static final String POST = "POST";
+  public static final String GET = "GET";
+  public static final String PUT = "PUT";
+  public static final String DELETE = "DELETE";
+  public static final String POST = "POST";
 
   private final String endpoint;
   private final Map<String, String> headers;
