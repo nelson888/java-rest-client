@@ -2,6 +2,7 @@ package com.tambapps.http.restclient.request.handler.output;
 
 import com.tambapps.http.restclient.util.IOUtils;
 import com.tambapps.http.restclient.util.ISSupplier;
+import com.tambapps.http.restclient.util.ObjectConverter;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -25,6 +26,10 @@ public final class BodyHandlers {
 
   public static BodyHandler json(String content) {
     return new JsonBodyHandler(content);
+  }
+
+  public static BodyHandler json(ObjectConverter converter, Object object) {
+    return new JsonBodyHandler(converter.stringify(object));
   }
 
   public static BodyHandler multipartFile(File file, String key, int bufferSize) {
