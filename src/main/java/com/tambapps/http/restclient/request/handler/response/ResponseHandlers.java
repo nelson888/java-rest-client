@@ -9,6 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Util class implementing diferent {@link ResponseHandler}
+ */
 public final class ResponseHandlers {
 
   private static final ResponseHandler<String> STRING_HANDLER =

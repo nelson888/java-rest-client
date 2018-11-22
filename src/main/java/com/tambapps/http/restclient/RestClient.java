@@ -18,6 +18,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Class that sends (a)synchronously REST requests
+ */
 public class RestClient {
 
   private ExecutorService executor;
@@ -25,6 +28,11 @@ public class RestClient {
   private final int nbThreads ;
   private String jwt = null;
 
+  /**
+   *
+   * @param baseUrl the base url of the rest service
+   * @param nbThreads the number of threads used by the executor
+   */
   public RestClient(String baseUrl, int nbThreads) {
     this.baseUrl = baseUrl;
     this.nbThreads = nbThreads;

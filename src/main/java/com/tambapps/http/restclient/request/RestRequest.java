@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class that holds REST request data
+ */
 public class RestRequest {
 
   public static final String GET = "GET";
@@ -62,6 +65,9 @@ public class RestRequest {
     return bodyHandler;
   }
 
+  /**
+   * Class allowing to build a REST request
+   */
   public static class Builder {
 
     private final Map<String, String> headers = new HashMap<>();

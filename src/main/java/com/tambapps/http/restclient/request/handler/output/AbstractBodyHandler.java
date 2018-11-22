@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLConnection;
 
+/**
+ * Class to extend in order to implement a custom {@link BodyHandler}
+ */
 public abstract class AbstractBodyHandler implements BodyHandler {
 
   @Override

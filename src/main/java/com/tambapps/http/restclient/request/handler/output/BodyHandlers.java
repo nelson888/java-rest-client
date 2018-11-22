@@ -13,6 +13,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URLConnection;
 
+/**
+ * Util class implementing different {@link BodyHandler}
+ */
 public final class BodyHandlers {
 
   private static final String CONTENT_TYPE = "Content-Type";
