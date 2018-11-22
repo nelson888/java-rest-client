@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public class RestResponse<SuccessT, ErrorT> {
 
+  public static final int REQUEST_NOT_SENT = -1;
+
   private final int responseCode;
   private final Map<String, List<String>> headers;
   private final Exception e;
@@ -44,11 +46,11 @@ public class RestResponse<SuccessT, ErrorT> {
   }
 
   public boolean isSuccessful() {
-    return e == null;
+    return !hasException() && !isErrorResponse();
   }
 
   public boolean isErrorResponse() {
-    return IOUtils.isErrorCode(responseCode);
+    return IOUtils.isErrorCode(responseCode) && responseCode != REQUEST_NOT_SENT;
   }
 
   public int getResponseCode() {
@@ -59,8 +61,12 @@ public class RestResponse<SuccessT, ErrorT> {
     return e;
   }
 
-  public Object getData() {
-    return data;
+  public boolean hasException() {
+    return e != null;
+  }
+
+  public <T> T getData() {
+    return (T) data;
   }
 
   public Map<String, List<String>> getHeaders() {

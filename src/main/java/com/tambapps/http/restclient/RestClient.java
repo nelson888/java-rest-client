@@ -78,8 +78,9 @@ public class RestClient {
     }
 
     Map<String, List<String>> responseHeaders = new HashMap<>();
+    int responseCode = RestResponse.REQUEST_NOT_SENT;
     try {
-      int responseCode = connection.getResponseCode();
+      responseCode = connection.getResponseCode();
       responseHeaders.putAll(connection.getHeaderFields());
       RestResponse<SuccessT, ErrorT> response;
       boolean isErrorCode = IOUtils.isErrorCode(responseCode);
@@ -91,7 +92,7 @@ public class RestClient {
       }
       return response;
     } catch (IOException e) {
-      return new RestResponse<>(e, responseHeaders);
+      return new RestResponse<>(responseCode, e, responseHeaders);
     } finally {
       connection.disconnect();
     }
