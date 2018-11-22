@@ -174,7 +174,7 @@ public class RestClientTest {
   }
 
   private void deleteNotFoundAsserts(RestResponse<Post, ?> response) {
-    assertTrue("Should be successful", response.isSuccessful());
+    assertFalse("Should not be successful", response.isSuccessful());
     assertTrue("Should be an error code", response.isErrorResponse());
     assertEquals("Should be equal", 404, response.getResponseCode());
     assertNotNull("Shouldn't be null", response.getErrorData());
