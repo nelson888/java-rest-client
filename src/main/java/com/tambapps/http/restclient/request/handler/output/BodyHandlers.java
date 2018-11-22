@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URLConnection;
 
@@ -55,17 +56,6 @@ public final class BodyHandlers {
     return new MultipartStreamBodyHandler(isSupplier, key, name, bufferSize);
   }
 
-  private abstract static class AbstractBodyHandler implements BodyHandler {
-
-    @Override
-    public final void prepareConnection(URLConnection connection) throws IOException {
-      connection.setDoOutput(true);
-      writeContent(connection);
-    }
-
-    abstract void writeContent(URLConnection connection) throws IOException;
-  }
-
   private static class StringBodyHandler extends AbstractBodyHandler {
 
     private final String content;
@@ -75,8 +65,8 @@ public final class BodyHandlers {
     }
 
     @Override
-    public void writeContent(URLConnection connection) throws IOException {
-      try (OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream())) {
+    public void writeContent(OutputStream oStream) throws IOException {
+      try (OutputStreamWriter wr = new OutputStreamWriter(oStream)) {
         wr.write(content);
         wr.flush();
       }
@@ -90,11 +80,11 @@ public final class BodyHandlers {
     }
 
     @Override
-    public void writeContent(URLConnection connection) throws IOException {
+    public void prepareURLConnection(URLConnection connection) {
       connection.setRequestProperty("Accept", JSON_TYPE);
       connection.setRequestProperty(CONTENT_TYPE, JSON_TYPE);
-      super.writeContent(connection);
     }
+
   }
 
   private abstract static class MultipartBodyHandler extends AbstractBodyHandler {
@@ -113,17 +103,9 @@ public final class BodyHandlers {
     }
 
     @Override
-    void writeContent(URLConnection connection) throws IOException {
-      connection.setUseCaches(false);
-      connection.setDoOutput(true);
-
-      connection.setRequestProperty("Connection", "Keep-Alive");
-      connection.setRequestProperty("Cache-Control", "no-cache");
-      connection.setRequestProperty(
-          CONTENT_TYPE, "multipart/form-data;boundary=" + this.boundary);
-
+    void writeContent(OutputStream oStream) throws IOException {
       try (DataOutputStream request = new DataOutputStream(
-          connection.getOutputStream())) {
+          oStream)) {
         request.writeBytes(twoHyphens + boundary + crlf);
         request.writeBytes("Content-Disposition: form-data; name=\"" +
             key + "\";filename=\"" +
@@ -136,6 +118,16 @@ public final class BodyHandlers {
         request.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
         request.flush();
       }
+    }
+
+    @Override
+    protected void prepareURLConnection(URLConnection connection) {
+      connection.setUseCaches(false);
+
+      connection.setRequestProperty("Connection", "Keep-Alive");
+      connection.setRequestProperty("Cache-Control", "no-cache");
+      connection.setRequestProperty(
+          CONTENT_TYPE, "multipart/form-data;boundary=" + this.boundary);
     }
 
     abstract InputStream getInputStream() throws IOException;
