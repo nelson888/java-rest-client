@@ -18,7 +18,7 @@ json, files or anything else. Some are implemented in BodyHandlers, and if you w
 you can extend AbstractBodyHandler
 
 ###ResponseHandler
-The ResponseHandler interface handles the response given by the REST server. It converts the output stream
+The ResponseHandler interface handles the response given by the REST server. It converts the input stream
 of the URLConnection into a given type. Some of them are implemented in ResponseHandlers.
 Feel free to implement your own by implementing ResponseHandler
 
