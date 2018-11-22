@@ -35,6 +35,13 @@ public final class ResponseHandlers {
             }
   };
 
+  private static final ResponseHandler<Void> NO_RESPONSE = new ResponseHandler<Void>() {
+    @Override
+    public Void convert(InputStream inputStream) {
+      return null;
+    }
+  };
+
   private ResponseHandlers() {
   }
 
@@ -100,5 +107,9 @@ public final class ResponseHandlers {
         return parser.parse(tClass, STRING_HANDLER.convert(inputStream));
       }
     };
+  }
+
+  public static ResponseHandler<Void> noResponse() {
+    return NO_RESPONSE;
   }
 }

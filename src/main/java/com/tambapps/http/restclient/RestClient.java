@@ -2,6 +2,7 @@ package com.tambapps.http.restclient;
 
 import com.tambapps.http.restclient.request.RestRequest;
 import com.tambapps.http.restclient.request.handler.response.ResponseHandler;
+import com.tambapps.http.restclient.request.handler.response.ResponseHandlers;
 import com.tambapps.http.restclient.response.RestResponse;
 import com.tambapps.http.restclient.util.IOUtils;
 
@@ -60,6 +61,10 @@ public class RestClient {
     return connection;
   }
 
+  public RestResponse<Void, Void> execute(RestRequest request) {
+    return execute(request, ResponseHandlers.noResponse());
+  }
+
   public <T> RestResponse<T, T> execute(RestRequest request, ResponseHandler<T> responseHandler) {
     return execute(request, responseHandler, responseHandler);
   }
@@ -98,6 +103,10 @@ public class RestClient {
     }
   }
 
+  public void executeAsync(final RestRequest request) {
+    executeAsync(request, ResponseHandlers.noResponse(), null);
+  }
+
   public <T> void executeAsync(final RestRequest request,
                                final ResponseHandler<T> responseHandler, final Callback<T, T> callback) {
     executeAsync(request, responseHandler, responseHandler, callback);
@@ -113,7 +122,7 @@ public class RestClient {
       @Override
       public void run() {
         RestResponse<SuccessT, ErrorT> response = execute(request, successResponseHandler, errorResponseHandler);
-        callback.call(response);
+        if (callback != null) callback.call(response);
       }
     });
   }
