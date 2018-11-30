@@ -5,24 +5,24 @@ a client that can send requests to a REST server.
 
 ## Architecture
 
-###RestClient
+### RestClient
 It is the main class of this library, that will send your requests synchronously/asynchronously. 
 
-###RestRequest
+### RestRequest
 The RestRequest holds the data of an Http request to a REST service.
 You can construct a request with a RestRequest.Builder.
 
-###BodyHandler
+### BodyHandler
 The BodyHandler interface is used for writing content into request, such as objects converted to
 json, files or anything else. Some are implemented in BodyHandlers, and if you want to implement your own,
 you can extend AbstractBodyHandler
 
-###ResponseHandler
+### ResponseHandler
 The ResponseHandler interface handles the response given by the REST server. It converts the input stream
 of the URLConnection into a given type. Some of them are implemented in ResponseHandlers.
 Feel free to implement your own by implementing ResponseHandler
 
-###Examples
+### Examples
 Send a request synchronously:
 ```java
 RestClient client = new RestClient(API_URL);
