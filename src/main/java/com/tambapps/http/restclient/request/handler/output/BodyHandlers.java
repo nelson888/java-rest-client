@@ -1,5 +1,6 @@
 package com.tambapps.http.restclient.request.handler.output;
 
+import com.tambapps.http.restclient.util.BytesContainer;
 import com.tambapps.http.restclient.util.IOUtils;
 import com.tambapps.http.restclient.util.ISSupplier;
 import com.tambapps.http.restclient.util.ObjectConverter;
@@ -47,6 +48,18 @@ public final class BodyHandlers {
     return multipartFile(file, file.getName());
   }
 
+  public static BodyHandler multipartBytes(BytesContainer bytesContainer, String name) {
+    return multipartBytes(bytesContainer, name, name, IOUtils.DEFAULT_BUFFER_SIZE);
+  }
+
+  public static BodyHandler multipartBytes(BytesContainer bytesContainer, String name, String key) {
+    return multipartBytes(bytesContainer, name, key, IOUtils.DEFAULT_BUFFER_SIZE);
+  }
+
+  public static BodyHandler multipartBytes(BytesContainer bytesContainer, String name, String key, int bufferSize) {
+    return new MultipartByteContainerBodyHandler(bytesContainer, name, key, bufferSize);
+  }
+
   public static BodyHandler multipartStream(ISSupplier isSupplier, String name, String key) {
     return multipartStream(isSupplier, key, name, IOUtils.DEFAULT_BUFFER_SIZE);
   }
@@ -61,7 +74,7 @@ public final class BodyHandlers {
 
   public static BodyHandler multipartStream(ISSupplier isSupplier, String name, String key,
       int bufferSize) {
-    return new MultipartStreamBodyHandler(isSupplier, key, name, bufferSize);
+    return new MultipartInputStreamBodyHandler(isSupplier, key, name, bufferSize);
   }
 
   private static class StringBodyHandler extends AbstractBodyHandler {
@@ -119,14 +132,14 @@ public final class BodyHandlers {
             key + "\";filename=\"" +
             name + "\"" + crlf);
         request.writeBytes(crlf);
-        try (InputStream is = getInputStream()) {
-          IOUtils.copy(is, request, bufferSize);
-        }
+        writeMultipart(request, bufferSize);
         request.writeBytes(crlf);
         request.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
         request.flush();
       }
     }
+
+    abstract void writeMultipart(DataOutputStream request, int bufferSize) throws IOException;
 
     @Override
     protected void prepareURLConnection(URLConnection connection) {
@@ -138,10 +151,25 @@ public final class BodyHandlers {
           CONTENT_TYPE, "multipart/form-data;boundary=" + this.boundary);
     }
 
-    abstract InputStream getInputStream() throws IOException;
   }
 
-  private static class MultipartFileBodyHandler extends MultipartBodyHandler {
+  private abstract static class MultipartStreamBodyHandler extends MultipartBodyHandler {
+
+    MultipartStreamBodyHandler(String name, String key, int bufferSize) {
+      super(name, key, bufferSize);
+    }
+
+    @Override
+    void writeMultipart(DataOutputStream request, int bufferSize) throws IOException {
+      try (InputStream is = getInputStream()) {
+        IOUtils.copy(is, request, bufferSize);
+      }
+    }
+
+    abstract InputStream getInputStream() throws IOException;
+
+  }
+    private static class MultipartFileBodyHandler extends MultipartStreamBodyHandler {
 
     private final File file;
 
@@ -156,11 +184,11 @@ public final class BodyHandlers {
     }
   }
 
-  private static class MultipartStreamBodyHandler extends MultipartBodyHandler {
+  private static class MultipartInputStreamBodyHandler extends MultipartStreamBodyHandler {
 
     private final ISSupplier isSupplier;
 
-    MultipartStreamBodyHandler(ISSupplier isSupplier, String name, String key, int bufferSize) {
+    MultipartInputStreamBodyHandler(ISSupplier isSupplier, String name, String key, int bufferSize) {
       super(name, key, bufferSize);
       this.isSupplier = isSupplier;
     }
@@ -168,6 +196,23 @@ public final class BodyHandlers {
     @Override
     InputStream getInputStream() throws IOException {
       return isSupplier.get();
+    }
+  }
+
+  private static class MultipartByteContainerBodyHandler extends MultipartBodyHandler {
+
+    private final BytesContainer bytesContainer;
+
+    MultipartByteContainerBodyHandler(BytesContainer bytesContainer,
+                                      String name, String key, int bufferSize) {
+      super(name, key, bufferSize);
+      this.bytesContainer = bytesContainer;
+    }
+
+    @Override
+    void writeMultipart(DataOutputStream request, int bufferSize) throws IOException {
+      byte[] bytes = bytesContainer.getBytes();
+      request.write(bytes);
     }
   }
 }
