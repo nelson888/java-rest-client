@@ -56,6 +56,17 @@ public final class ResponseHandlers {
     return INT_HANDLER;
   }
 
+  public static <T extends Enum<T>> ResponseHandler<T> enumHandler(final Class<T> clazz) {
+    return new ResponseHandler<T>() {
+      @Override
+      public T convert(InputStream inputStream) throws IOException {
+        String name = STRING_HANDLER.convert(inputStream)
+          .replace("\"", ""); //in case it is a string representation
+        return Enum.valueOf(clazz, name);
+      }
+    };
+  }
+
   public static ResponseHandler<BytesContainer> bytesHandler() {
     return BYTES_HANDLER;
   }
@@ -73,6 +84,9 @@ public final class ResponseHandlers {
     return new ResponseHandler<File>() {
       @Override
       public File convert(InputStream inputStream) throws IOException {
+        if (!file.exists() && !file.createNewFile()) {
+          throw new IOException("Couldn't create new file");
+        }
         try (FileOutputStream fos = new FileOutputStream(file)) {
           IOUtils.copy(inputStream, fos, bufferSize);
         }
