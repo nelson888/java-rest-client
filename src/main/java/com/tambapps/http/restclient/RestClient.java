@@ -93,6 +93,7 @@ public class RestClient {
     Map<String, List<String>> responseHeaders = new HashMap<>();
     int responseCode = RestResponse.REQUEST_NOT_SENT;
     try {
+
       responseCode = connection.getResponseCode();
       responseHeaders.putAll(connection.getHeaderFields());
       RestResponse<SuccessT, ErrorT> response;

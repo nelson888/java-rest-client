@@ -32,9 +32,13 @@ public class RestResponse<SuccessT, ErrorT> {
   }
 
   public RestResponse(Exception e, Map<String, List<String>> headers) {
+    this(e, REQUEST_NOT_SENT, headers);
+  }
+
+  public RestResponse(Exception e, int responseCode, Map<String, List<String>> headers) {
     this.headers = Collections.unmodifiableMap(headers);
     this.e = e;
-    responseCode = -1;
+    this.responseCode = responseCode;
     this.data = null;
   }
 

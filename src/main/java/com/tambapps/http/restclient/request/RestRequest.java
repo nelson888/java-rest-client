@@ -6,15 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tambapps.http.restclient.methods.HttpMethods.*;
+
 /**
  * Class that holds REST request data
  */
 public class RestRequest {
-
-  public static final String GET = "GET";
-  public static final String PUT = "PUT";
-  public static final String DELETE = "DELETE";
-  public static final String POST = "POST";
 
   private final String endpoint;
   private final Map<String, String> headers;
