@@ -153,31 +153,4 @@ public class RestClientTest {
     assertFalse("Shouldn't be an error code", response.isErrorResponse());
   }
 
-  @Test
-  public void deleteNotFoundTest() throws InterruptedException {
-    RestRequest request = RestRequest.builder("posts/1456846854665")
-        .DELETE()
-        .build();
-    client.executeAsync(request, RESPONSE_HANDLER, ResponseHandlers.stringHandler(),
-        new RestClient.Callback<Post, String>() {
-          @Override
-          public void call(RestResponse<Post, String> response) {
-            deleteNotFoundAsserts(response);
-            latch.countDown();
-          }
-        });
-    RestResponse<Post, String> response = client.execute(request, RESPONSE_HANDLER,
-        ResponseHandlers.stringHandler());
-
-    deleteNotFoundAsserts(response);
-    assertTrue("Should be true", latch.await(TIMEOUT, TimeUnit.SECONDS));
-  }
-
-  private void deleteNotFoundAsserts(RestResponse<Post, ?> response) {
-    assertFalse("Should not be successful", response.isSuccessful());
-    assertTrue("Should be an error code", response.isErrorResponse());
-    assertEquals("Should be equal", 404, response.getResponseCode());
-    assertNotNull("Shouldn't be null", response.getErrorData());
-  }
-
 }
