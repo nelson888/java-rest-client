@@ -143,6 +143,10 @@ public class RestClient {
     setJwt(null);
   }
 
+  public String getJwt() {
+    return jwt;
+  }
+
   public interface Callback<SuccessT, ErrorT> {
     void call(RestResponse<SuccessT, ErrorT> response);
   }
