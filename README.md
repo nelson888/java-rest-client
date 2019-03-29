@@ -1,7 +1,7 @@
-#Java REST client
+# Java REST client
 
 This project is a Java library for working with REST services. It provides
-a client that can send requests to a REST server. 
+a client that can send requests to a REST server. It was written in Java 7 
 
 ## Architecture
 
