@@ -29,7 +29,9 @@ RestClient client = new RestClient(API_URL);
 RestRequest request = RestRequest.builder("posts/1")
         .GET()
         .build();
-RestResponse<Post, ?> response = client.execute(request, RESPONSE_HANDLER);
+final ResponseHandler<Post> responseHandler =
+    ResponseHandlers.objectHandler(Post.class, JSON_PARSER);
+RestResponse<Post, ?> response = client.execute(request, responseHandler);
 if (response.isSuccessful()) {
   handlePost(response.getSuccessData());
 } else if (response.isErrorResponse()) {
@@ -66,7 +68,7 @@ RestRequest request = RestRequest.builder(FILE_STORAGE_ENDPOINT)
     client.executeAsync(request, ResponseHandlers.stringHandler(),
         new RestClient.Callback<String, String>() {
               @Override
-              public void call(RestResponse<Post, Post> response) {
+              public void call(RestResponse<String, String> response) {
                 print(response.getData());
               }
             });
@@ -89,4 +91,14 @@ client.executeAsync(request, ResponseHandlers.multipartFileHandler(file),
                 }
               }
             });
+```
+Receive a list of object:
+```java
+int userId = 2;
+RestRequest request = RestRequest.builder("/posts")
+    .parameter("userId", userId)
+    .GET()
+    .build();
+final ResponseHandler<List<Post>> listResponseHandler = ResponseHandlers.objectListHandler(Post.class, JSON_LIST_PARSER);
+RestResponse<List<Post>, ?> response = client.execute(request, listResponseHandler);
 ```
