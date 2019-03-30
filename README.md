@@ -49,7 +49,10 @@ RestRequest request = RestRequest.builder("posts/" + id)
         .PUT()
         .output(BodyHandlers.json(gson.toJson(post)))
         .build();
-client.executeAsync(request, RESPONSE_HANDLER, ERROR_RESPONSE_HANDLER, new RestClient.Callback<Post, Post>() {
+client.executeAsync(request, 
+    RESPONSE_HANDLER, 
+    ERROR_RESPONSE_HANDLER, 
+    new RestClient.Callback<Post, Post>() {
       @Override
       public void call(RestResponse<Post, ErrorResponse> response) {
         if (response.isSuccessful()) {
@@ -101,6 +104,7 @@ RestRequest request = RestRequest.builder("/posts")
     .parameter("userId", userId)
     .GET()
     .build();
-final ResponseHandler<List<Post>> listResponseHandler = ResponseHandlers.objectListHandler(Post.class, JSON_LIST_PARSER);
+final ResponseHandler<List<Post>> listResponseHandler = 
+    ResponseHandlers.objectListHandler(Post.class, JSON_LIST_PARSER);
 RestResponse<List<Post>, ?> response = client.execute(request, listResponseHandler);
 ```
