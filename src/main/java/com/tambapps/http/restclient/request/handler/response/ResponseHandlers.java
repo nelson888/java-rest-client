@@ -2,12 +2,14 @@ package com.tambapps.http.restclient.request.handler.response;
 
 import com.tambapps.http.restclient.util.BytesContainer;
 import com.tambapps.http.restclient.util.IOUtils;
+import com.tambapps.http.restclient.util.ObjectListParser;
 import com.tambapps.http.restclient.util.ObjectParser;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Util class implementing diferent {@link ResponseHandler}
@@ -117,10 +119,20 @@ public final class ResponseHandlers {
   }
 
   public static <T> ResponseHandler<T> objectHandler(final Class<T> tClass,
-      final ObjectParser parser) {
+                                                     final ObjectParser parser) {
     return new ResponseHandler<T>() {
       @Override
       public T convert(InputStream inputStream) throws IOException {
+        return parser.parse(tClass, STRING_HANDLER.convert(inputStream));
+      }
+    };
+  }
+
+  public static <T> ResponseHandler<List<T>> objectListHandler(final Class<T> tClass,
+                                                              final ObjectListParser parser) {
+    return new ResponseHandler<List<T>>() {
+      @Override
+      public List<T> convert(InputStream inputStream) throws IOException {
         return parser.parse(tClass, STRING_HANDLER.convert(inputStream));
       }
     };

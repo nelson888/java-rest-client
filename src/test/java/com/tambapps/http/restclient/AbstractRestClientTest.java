@@ -2,13 +2,17 @@ package com.tambapps.http.restclient;
 
 import static org.junit.Assert.*;
 
+import com.google.gson.reflect.TypeToken;
 import com.tambapps.http.restclient.request.handler.response.ResponseHandler;
 import com.tambapps.http.restclient.request.handler.response.ResponseHandlers;
 import com.tambapps.http.restclient.response.RestResponse;
+import com.tambapps.http.restclient.util.ObjectListParser;
 import com.tambapps.http.restclient.util.ObjectParser;
 
 import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractRestClientTest {
@@ -23,18 +27,46 @@ public abstract class AbstractRestClientTest {
     }
   };
   static final ResponseHandler<Post> RESPONSE_HANDLER =
-      ResponseHandlers.objectHandler(Post.class, JSON_PARSER);
+    ResponseHandlers.objectHandler(Post.class, JSON_PARSER);
+
+  private static final Type POST_LIST_TYPE = new TypeToken<List<Post>>(){}.getType();
+  private static final ObjectListParser JSON_LIST_PARSER = new ObjectListParser() {
+    @Override
+    public <T> List<T> parse(Class<T> clazz, String data) {
+      return GSON.fromJson(data, POST_LIST_TYPE);
+    }
+  };
+  static final ResponseHandler<List<Post>> LIST_RESPONSE_HANDLER =
+    ResponseHandlers.objectListHandler(Post.class, JSON_LIST_PARSER);
 
   void getAsserts(RestResponse<Post, ?> response) {
     assertTrue("Should be successful", response.isSuccessful());
     assertFalse("Shouldn't be an error code", response.isErrorResponse());
 
-    Post post = response.getSuccessData();
+    assertPost(response.getSuccessData());
+  }
+
+  private void assertPost(Post post) {
     assertNotNull("Shouldn't be null", post);
     assertNotNull("Shouldn't be null", post.getId());
     assertNotNull("Shouldn't be null", post.getUserId());
     assertNotNull("Shouldn't be null", post.getBody());
     assertNotNull("Shouldn't be null", post.getTitle());
+  }
+  void getListAsserts(RestResponse<List<Post>, ?> response) {
+    assertTrue("Should be successful", response.isSuccessful());
+    assertFalse("Shouldn't be an error code", response.isErrorResponse());
+
+    for (Post post : response.getSuccessData()) {
+      assertPost(post);
+    }
+  }
+
+  void getListAssertsWithUserId(RestResponse<List<Post>, ?> response, int userId) {
+    getListAsserts(response);
+    for (Post post : response.getSuccessData()) {
+      assertEquals("Should be equal", userId, (int) post.getUserId());
+    }
   }
 
   void putAsserts(RestResponse<Post, ?> response, Post post) {

@@ -9,6 +9,7 @@ import com.tambapps.http.restclient.response.RestResponse;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -88,6 +89,40 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
         latch.countDown();
       }
     });
+    assertTrue("Should be true", latch.await(TIMEOUT, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void getListTest() throws InterruptedException {
+    RestRequest request = RestRequest.builder("/posts")
+      .GET()
+      .build();
+    client.execute(request, LIST_RESPONSE_HANDLER, new AsyncRestClient.Callback<List<Post>, List<Post>>() {
+      @Override
+      public void call(RestResponse<List<Post>, List<Post>> response) {
+        getListAsserts(response);
+        latch.countDown();
+      }
+    });
+
+    assertTrue("Should be true", latch.await(TIMEOUT, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void getListWithParameterTest() throws InterruptedException {
+    final int userId = 1;
+    RestRequest request = RestRequest.builder("/posts")
+      .parameter("userId", userId)
+      .GET()
+      .build();
+    client.execute(request, LIST_RESPONSE_HANDLER, new AsyncRestClient.Callback<List<Post>, List<Post>>() {
+      @Override
+      public void call(RestResponse<List<Post>, List<Post>> response) {
+        getListAssertsWithUserId(response, userId);
+        latch.countDown();
+      }
+    });
+
     assertTrue("Should be true", latch.await(TIMEOUT, TimeUnit.SECONDS));
   }
 

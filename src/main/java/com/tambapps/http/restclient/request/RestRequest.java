@@ -2,8 +2,11 @@ package com.tambapps.http.restclient.request;
 
 import com.tambapps.http.restclient.request.handler.output.BodyHandler;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static com.tambapps.http.restclient.methods.HttpMethods.*;
@@ -68,6 +71,7 @@ public class RestRequest {
   public static class Builder {
 
     private final Map<String, String> headers = new HashMap<>();
+    private final Map<String, Object> parameters = new HashMap<>();
     private final String endpoint;
     private String method = GET;
     private Integer timeout = null;
@@ -119,8 +123,31 @@ public class RestRequest {
       return this;
     }
 
+    public Builder parameter(String urlParameter, Object value) {
+      this.parameters.put(urlParameter, value);
+      return this;
+    }
+
+    public Builder parameters(Map<String, Object> parameters) {
+      this.parameters.putAll(parameters);
+      return this;
+    }
+
     public RestRequest build() {
-      return new RestRequest(endpoint, headers, method, timeout, bodyHandler);
+      return new RestRequest(endpointWithParameters(), headers, method, timeout, bodyHandler);
+    }
+
+    private String endpointWithParameters() {
+      StringBuilder builder = new StringBuilder().append(endpoint);
+      if (parameters.size() > 0) {
+        builder.append('?');
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+          builder.append(String.format("%s=%s", entry.getKey(), entry.getValue()));
+          builder.append('&');
+        }
+        builder.deleteCharAt(builder.length() - 1); //delete last '&'
+      }
+      return builder.toString();
     }
   }
 
