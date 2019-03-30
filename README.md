@@ -70,7 +70,7 @@ RestRequest request = RestRequest.builder(FILE_STORAGE_ENDPOINT)
         .output(BodyHandlers.multipartFile(file))
         .build();
         
-    client.executeAsync(request, ResponseHandlers.stringHandler(),
+client.executeAsync(request, ResponseHandlers.stringHandler(),
         new RestClient.Callback<String, Void>() {
               @Override
               public void call(RestResponse<String, String> response) {
