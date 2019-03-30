@@ -31,7 +31,9 @@ RestRequest request = RestRequest.builder("posts/1")
         .build();
 final ResponseHandler<Post> responseHandler =
     ResponseHandlers.objectHandler(Post.class, JSON_PARSER);
-RestResponse<Post, ?> response = client.execute(request, responseHandler);
+final ResponseHandler<Post> errorResponseHandler =
+    ResponseHandlers.objectHandler(ErrorResponse.class, JSON_PARSER);
+RestResponse<Post, ErrorResponse> response = client.execute(request, responseHandler, errorResponseHandler);
 if (response.isSuccessful()) {
   handlePost(response.getSuccessData());
 } else if (response.isErrorResponse()) {
@@ -47,9 +49,9 @@ RestRequest request = RestRequest.builder("posts/" + id)
         .PUT()
         .output(BodyHandlers.json(gson.toJson(post)))
         .build();
-client.executeAsync(request, RESPONSE_HANDLER, new RestClient.Callback<Post, Post>() {
+client.executeAsync(request, RESPONSE_HANDLER, ERROR_RESPONSE_HANDLER, new RestClient.Callback<Post, Post>() {
       @Override
-      public void call(RestResponse<Post, Post> response) {
+      public void call(RestResponse<Post, ErrorResponse> response) {
         if (response.isSuccessful()) {
           handlePost(response.getSuccessData());
         }
@@ -66,7 +68,7 @@ RestRequest request = RestRequest.builder(FILE_STORAGE_ENDPOINT)
         .build();
         
     client.executeAsync(request, ResponseHandlers.stringHandler(),
-        new RestClient.Callback<String, String>() {
+        new RestClient.Callback<String, Void>() {
               @Override
               public void call(RestResponse<String, String> response) {
                 print(response.getData());
