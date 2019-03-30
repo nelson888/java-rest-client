@@ -34,8 +34,8 @@ public class AsyncRestClient extends AbstractRestClient {
   }
 
   public <T> void execute(final RestRequest request,
-                               final ResponseHandler<T> responseHandler, final Callback<T, T> callback) {
-    execute(request, responseHandler, responseHandler, callback);
+                               final ResponseHandler<T> responseHandler, final Callback<T, Void> callback) {
+    execute(request, responseHandler, ResponseHandlers.noResponse(), callback);
   }
   public <SuccessT, ErrorT> void execute(final RestRequest request,
                                               final ResponseHandler<SuccessT> successResponseHandler,

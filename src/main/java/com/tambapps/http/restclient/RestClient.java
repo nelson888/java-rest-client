@@ -22,8 +22,8 @@ public class RestClient extends AbstractRestClient {
     return execute(request, ResponseHandlers.noResponse());
   }
 
-  public <T> RestResponse<T, T> execute(RestRequest request, ResponseHandler<T> responseHandler) {
-    return execute(request, responseHandler, responseHandler);
+  public <T> RestResponse<T, Void> execute(RestRequest request, ResponseHandler<T> responseHandler) {
+    return execute(request, responseHandler, ResponseHandlers.noResponse());
   }
 
   public <SuccessT, ErrorT> RestResponse<SuccessT, ErrorT> execute(RestRequest request,
