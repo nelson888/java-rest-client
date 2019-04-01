@@ -123,6 +123,15 @@ public class RestRequest {
       return this;
     }
 
+    public void headers(String... args) {
+      if (args.length % 2 != 0) {
+        throw new IllegalArgumentException("Should have pairs of (entry, value)");
+      }
+      for (int i = 0; i < args.length / 2; i++) {
+        header(args[i], args[i + 1]);
+      }
+    }
+
     public Builder parameter(String urlParameter, Object value) {
       this.parameters.put(urlParameter, value);
       return this;
