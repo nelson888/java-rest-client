@@ -16,13 +16,13 @@ public class RestResponse<SuccessT, ErrorT> {
   public static final int REQUEST_NOT_SENT = -1;
 
   private final int responseCode;
-  private final Map<String, List<String>> headers;
+  private final HttpHeaders headers;
   private final Exception e;
   protected final Object data;
 
   public RestResponse(int responseCode, Object data, Map<String, List<String>> headers) {
     this.responseCode = responseCode;
-    this.headers = Collections.unmodifiableMap(headers);
+    this.headers = new HttpHeaders(headers);
     this.data = data;
     e = null;
   }
@@ -36,7 +36,7 @@ public class RestResponse<SuccessT, ErrorT> {
   }
 
   public RestResponse(Exception e, int responseCode, Map<String, List<String>> headers) {
-    this.headers = Collections.unmodifiableMap(headers);
+    this.headers = new HttpHeaders(headers);
     this.e = e;
     this.responseCode = responseCode;
     this.data = null;
@@ -44,7 +44,7 @@ public class RestResponse<SuccessT, ErrorT> {
 
   public RestResponse(int responseCode, Map<String, List<String>> headers, Exception e, Object data) {
     this.responseCode = responseCode;
-    this.headers = headers;
+    this.headers = new HttpHeaders(headers);
     this.e = e;
     this.data = data;
   }
@@ -73,7 +73,7 @@ public class RestResponse<SuccessT, ErrorT> {
     return (T) data;
   }
 
-  public Map<String, List<String>> getHeaders() {
+  public HttpHeaders getHeaders() {
     return headers;
   }
 
