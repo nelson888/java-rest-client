@@ -12,10 +12,10 @@ It is the main class of this library, that will send your requests synchronously
 The RestRequest holds the data of an Http request to a REST service.
 You can construct a request with a RestRequest.Builder.
 
-### BodyHandler
-The BodyHandler interface is used for writing content into request, such as objects converted to
-json, files or anything else. Some are implemented in BodyHandlers, and if you want to implement your own,
-you can extend AbstractBodyHandler
+### BodyProcessor
+The BodyProcessor interface is used for writing content into request, such as objects converted to
+json, files or anything else. Some are implemented in BodyProcessors, and if you want to implement your own,
+you can extend AbstractBodyProcessor
 
 ### ResponseHandler
 The ResponseHandler interface handles the response given by the REST server. It converts the input stream
@@ -45,14 +45,15 @@ if (response.isSuccessful()) {
 
 Or asynchronously:
 ```java
+RestClient client = new AsyncRestClient(API_URL);
 RestRequest request = RestRequest.builder("posts/" + id)
         .PUT()
-        .output(BodyHandlers.json(gson.toJson(post)))
+        .body(BodyProcessors.json(gson.toJson(post)))
         .build();
-client.executeAsync(request, 
+client.execute(request, 
     RESPONSE_HANDLER, 
     ERROR_RESPONSE_HANDLER, 
-    new RestClient.Callback<Post, Post>() {
+    new RestClient.Callback<Post, ErrorResponse>() {
       @Override
       public void call(RestResponse<Post, ErrorResponse> response) {
         if (response.isSuccessful()) {
@@ -67,13 +68,13 @@ Send multipart files:
 ```java
 RestRequest request = RestRequest.builder(FILE_STORAGE_ENDPOINT)
         .POST()
-        .output(BodyHandlers.multipartFile(file))
+        .body(BodyProcessors.multipartFile(file))
         .build();
         
-client.executeAsync(request, ResponseHandlers.stringHandler(),
+client.execute(request, ResponseHandlers.stringHandler(),
         new RestClient.Callback<String, Void>() {
               @Override
-              public void call(RestResponse<String, String> response) {
+              public void call(RestResponse<String, Void> response) {
                 print(response.getData());
               }
             });
@@ -84,7 +85,7 @@ File file = new File("path/to/file/to/write");
 RestRequest request = RestRequest.builder(FILE_STORAGE_ENDPOINT + fileId)
         .GET()
         .build();
-client.executeAsync(request, ResponseHandlers.multipartFileHandler(file),
+client.execute(request, ResponseHandlers.multipartFileHandler(file),
         ResponseHandlers.stringHandler(),
         new RestClient.Callback<File, String>() {
               @Override
