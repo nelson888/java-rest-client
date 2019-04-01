@@ -3,8 +3,8 @@ package com.tambapps.http.restclient;
 import static org.junit.Assert.*;
 
 import com.google.gson.reflect.TypeToken;
-import com.tambapps.http.restclient.request.handler.response.ResponseHandler;
-import com.tambapps.http.restclient.request.handler.response.ResponseHandlers;
+import com.tambapps.http.restclient.response.handler.ResponseHandler;
+import com.tambapps.http.restclient.response.handler.ResponseHandlers;
 import com.tambapps.http.restclient.response.RestResponse;
 import com.tambapps.http.restclient.util.ObjectListParser;
 import com.tambapps.http.restclient.util.ObjectParser;

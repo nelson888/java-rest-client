@@ -1,13 +1,13 @@
-package com.tambapps.http.restclient.request.handler.body;
+package com.tambapps.http.restclient.request.body;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLConnection;
 
 /**
- * Class to extend in order to implement a custom {@link BodyHandler}
+ * Class to extend in order to implement a custom {@link BodyProcessor}
  */
-public abstract class AbstractBodyHandler implements BodyHandler {
+public abstract class AbstractBodyProcessor implements BodyProcessor {
 
   @Override
   public final void prepareConnection(URLConnection connection) throws IOException {

@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.request.handler.response;
+package com.tambapps.http.restclient.response.handler;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.request.handler.body;
+package com.tambapps.http.restclient.request.body;
 
 import com.tambapps.http.restclient.util.BytesContainer;
 import com.tambapps.http.restclient.util.IOUtils;
@@ -15,85 +15,85 @@ import java.io.OutputStreamWriter;
 import java.net.URLConnection;
 
 /**
- * Util class implementing different {@link BodyHandler}
+ * Util class implementing different {@link BodyProcessor}
  */
-public final class BodyHandlers {
+public final class BodyProcessors {
 
   private static final String CONTENT_TYPE = "Content-Type";
   private static final String JSON_TYPE = "application/json";
 
-  private BodyHandlers() { }
+  private BodyProcessors() { }
 
-  public static BodyHandler string(String content) {
-    return new StringBodyHandler(content);
+  public static BodyProcessor string(String content) {
+    return new StringBodyProcessor(content);
   }
 
-  public static BodyHandler json(String content) {
-    return new JsonBodyHandler(content);
+  public static BodyProcessor json(String content) {
+    return new JsonBodyProcessor(content);
   }
 
-  public static BodyHandler json(ObjectConverter converter, Object object) {
-    return new JsonBodyHandler(converter.stringify(object));
+  public static BodyProcessor json(ObjectConverter converter, Object object) {
+    return new JsonBodyProcessor(converter.stringify(object));
   }
 
-  public static BodyHandler multipartFile(File file, String key, int bufferSize) {
-    return new MultipartFileBodyHandler(file, key, bufferSize);
+  public static BodyProcessor multipartFile(File file, String key, int bufferSize) {
+    return new MultipartFileBodyProcessor(file, key, bufferSize);
   }
 
-  public static BodyHandler multipartFile(File file, String key) {
+  public static BodyProcessor multipartFile(File file, String key) {
     return multipartFile(file, key, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
-  public static BodyHandler multipartFile(File file) {
+  public static BodyProcessor multipartFile(File file) {
     return multipartFile(file, file.getName());
   }
 
-  public static BodyHandler multipartBytes(BytesContainer bytesContainer, String name) {
+  public static BodyProcessor multipartBytes(BytesContainer bytesContainer, String name) {
     return multipartBytes(bytesContainer, name, name, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
-  public static BodyHandler multipartBytes(BytesContainer bytesContainer, String name, String key) {
+  public static BodyProcessor multipartBytes(BytesContainer bytesContainer, String name, String key) {
     return multipartBytes(bytesContainer, name, key, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
-  public static BodyHandler multipartBytes(BytesContainer bytesContainer, String name, String key, int bufferSize) {
-    return new MultipartByteContainerBodyHandler(bytesContainer, name, key, bufferSize);
+  public static BodyProcessor multipartBytes(BytesContainer bytesContainer, String name, String key, int bufferSize) {
+    return new MultipartByteContainerBodyProcessor(bytesContainer, name, key, bufferSize);
   }
 
-  public static BodyHandler multipartStream(ISSupplier isSupplier, String name, String key) {
+  public static BodyProcessor multipartStream(ISSupplier isSupplier, String name, String key) {
     return multipartStream(isSupplier, key, name, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
-  public static BodyHandler multipartStream(ISSupplier isSupplier, String name) {
+  public static BodyProcessor multipartStream(ISSupplier isSupplier, String name) {
     return multipartStream(isSupplier, name, name, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
-  public static BodyHandler multipartStream(ISSupplier isSupplier, String name, int bufferSize) {
+  public static BodyProcessor multipartStream(ISSupplier isSupplier, String name, int bufferSize) {
     return multipartStream(isSupplier, name, name, bufferSize);
   }
 
-  public static BodyHandler multipartStream(ISSupplier isSupplier, String name, String key,
+  public static BodyProcessor multipartStream(ISSupplier isSupplier, String name, String key,
       int bufferSize) {
-    return new MultipartInputStreamBodyHandler(isSupplier, key, name, bufferSize);
+    return new MultipartInputStreamBodyProcessor(isSupplier, key, name, bufferSize);
   }
 
-  public static BodyHandler bytes(byte[] bytes) {
-    return new BytesBodyHandler(bytes);
+  public static BodyProcessor bytes(byte[] bytes) {
+    return new BytesBodyProcessor(bytes);
   }
 
-  public static BodyHandler stream(ISSupplier isSupplier) {
-    return new InputStreamHandler(isSupplier);
+  public static BodyProcessor stream(ISSupplier isSupplier) {
+    return new InputStreamBodyProcessor(isSupplier);
   }
 
-  public static BodyHandler file(File file) {
-    return new FileBodyHandler(file);
+  public static BodyProcessor file(File file) {
+    return new FileBodyProcessor(file);
   }
 
-  private static class StringBodyHandler extends AbstractBodyHandler {
+  private static class StringBodyProcessor extends AbstractBodyProcessor {
 
     private final String content;
 
-    private StringBodyHandler(String content) {
+    private StringBodyProcessor(String content) {
       this.content = content;
     }
 
@@ -106,9 +106,9 @@ public final class BodyHandlers {
     }
   }
 
-  private static class JsonBodyHandler extends StringBodyHandler {
+  private static class JsonBodyProcessor extends StringBodyProcessor {
 
-    private JsonBodyHandler(String content) {
+    private JsonBodyProcessor(String content) {
       super(content);
     }
 
@@ -120,7 +120,7 @@ public final class BodyHandlers {
 
   }
 
-  private abstract static class MultipartBodyHandler extends AbstractBodyHandler {
+  private abstract static class MultipartBodyProcessor extends AbstractBodyProcessor {
 
     private final String boundary = "*****";
     private final String crlf = "\r\n";
@@ -129,7 +129,7 @@ public final class BodyHandlers {
     private final String name;
     private final int bufferSize;
 
-    MultipartBodyHandler(String name, String key, int bufferSize) {
+    MultipartBodyProcessor(String name, String key, int bufferSize) {
       this.name = name;
       this.key = key;
       this.bufferSize = bufferSize;
@@ -165,9 +165,9 @@ public final class BodyHandlers {
 
   }
 
-  private abstract static class MultipartStreamBodyHandler extends MultipartBodyHandler {
+  private abstract static class MultipartStreamBodyProcessor extends MultipartBodyProcessor {
 
-    MultipartStreamBodyHandler(String name, String key, int bufferSize) {
+    MultipartStreamBodyProcessor(String name, String key, int bufferSize) {
       super(name, key, bufferSize);
     }
 
@@ -181,11 +181,11 @@ public final class BodyHandlers {
     abstract InputStream getInputStream() throws IOException;
 
   }
-    private static class MultipartFileBodyHandler extends MultipartStreamBodyHandler {
+    private static class MultipartFileBodyProcessor extends MultipartStreamBodyProcessor {
 
     private final File file;
 
-    MultipartFileBodyHandler(File file, String key, int bufferSize) {
+    MultipartFileBodyProcessor(File file, String key, int bufferSize) {
       super(file.getName(), key, bufferSize);
       this.file = file;
     }
@@ -196,11 +196,11 @@ public final class BodyHandlers {
     }
   }
 
-  private static class MultipartInputStreamBodyHandler extends MultipartStreamBodyHandler {
+  private static class MultipartInputStreamBodyProcessor extends MultipartStreamBodyProcessor {
 
     private final ISSupplier isSupplier;
 
-    MultipartInputStreamBodyHandler(ISSupplier isSupplier, String name, String key, int bufferSize) {
+    MultipartInputStreamBodyProcessor(ISSupplier isSupplier, String name, String key, int bufferSize) {
       super(name, key, bufferSize);
       this.isSupplier = isSupplier;
     }
@@ -211,11 +211,11 @@ public final class BodyHandlers {
     }
   }
 
-  private static class MultipartByteContainerBodyHandler extends MultipartBodyHandler {
+  private static class MultipartByteContainerBodyProcessor extends MultipartBodyProcessor {
 
     private final BytesContainer bytesContainer;
 
-    MultipartByteContainerBodyHandler(BytesContainer bytesContainer,
+    MultipartByteContainerBodyProcessor(BytesContainer bytesContainer,
                                       String name, String key, int bufferSize) {
       super(name, key, bufferSize);
       this.bytesContainer = bytesContainer;
@@ -228,11 +228,11 @@ public final class BodyHandlers {
     }
   }
 
-  private static class BytesBodyHandler extends AbstractBodyHandler {
+  private static class BytesBodyProcessor extends AbstractBodyProcessor {
 
     private final byte[] bytes;
 
-    public BytesBodyHandler(byte[] bytes) {
+    public BytesBodyProcessor(byte[] bytes) {
       this.bytes = bytes;
     }
 
@@ -242,11 +242,11 @@ public final class BodyHandlers {
     }
   }
 
-  private static class FileBodyHandler extends AbstractBodyHandler {
+  private static class FileBodyProcessor extends AbstractBodyProcessor {
 
     private final File file;
 
-    public FileBodyHandler(File file) {
+    public FileBodyProcessor(File file) {
       this.file = file;
     }
 
@@ -258,11 +258,11 @@ public final class BodyHandlers {
     }
   }
 
-  private static class InputStreamHandler extends AbstractBodyHandler {
+  private static class InputStreamBodyProcessor extends AbstractBodyProcessor {
 
     private final ISSupplier supplier;
 
-    public InputStreamHandler(ISSupplier supplier) {
+    public InputStreamBodyProcessor(ISSupplier supplier) {
       this.supplier = supplier;
     }
 

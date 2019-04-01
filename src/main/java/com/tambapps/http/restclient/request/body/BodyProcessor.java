@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.request.handler.body;
+package com.tambapps.http.restclient.request.body;
 
 import java.io.IOException;
 import java.net.URLConnection;
@@ -6,7 +6,7 @@ import java.net.URLConnection;
 /**
  * Interface that configure an URLConnection to put a body on the request
  */
-public interface BodyHandler {
+public interface BodyProcessor {
 
   /**
    * Prepare and write the body content on the url connection

@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.request.handler.response;
+package com.tambapps.http.restclient.response.handler;
 
 import com.tambapps.http.restclient.util.BytesContainer;
 import com.tambapps.http.restclient.util.IOUtils;

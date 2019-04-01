@@ -3,7 +3,7 @@ package com.tambapps.http.restclient;
 import static org.junit.Assert.assertTrue;
 
 import com.tambapps.http.restclient.request.RestRequest;
-import com.tambapps.http.restclient.request.handler.body.BodyHandlers;
+import com.tambapps.http.restclient.request.body.BodyProcessors;
 import com.tambapps.http.restclient.response.RestResponse;
 
 import org.junit.Before;
@@ -45,7 +45,7 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
     final Post post = new Post(id, 43, "title", "body");
     RestRequest request = RestRequest.builder("posts/" + id)
         .PUT()
-        .output(BodyHandlers.json(GSON.toJson(post)))
+        .body(BodyProcessors.json(GSON.toJson(post)))
         .build();
 
     client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post, Void>() {
@@ -63,7 +63,7 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
     final Post post = new Post(0, 43, "title", "body");
     RestRequest request = RestRequest.builder("posts/")
         .POST()
-        .output(BodyHandlers.json(GSON.toJson(post)))
+        .body(BodyProcessors.json(GSON.toJson(post)))
         .build();
 
     client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post, Void>() {

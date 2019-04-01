@@ -1,12 +1,12 @@
 package com.tambapps.http.restclient.request;
 
-import com.tambapps.http.restclient.request.handler.body.BodyHandler;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.tambapps.http.restclient.methods.HttpMethods.*;
+
+import com.tambapps.http.restclient.request.body.BodyProcessor;
 
 /**
  * Class that holds REST request data
@@ -17,10 +17,10 @@ public class RestRequest {
   private final Map<String, String> headers;
   private final String method;
   private final Integer timeout;
-  private final BodyHandler bodyHandler;
+  private final BodyProcessor bodyProcessor;
 
   private RestRequest(String endpoint, Map<String, String> headers, String method, Integer timeout,
-      BodyHandler bodyHandler) {
+      BodyProcessor bodyProcessor) {
     if (endpoint == null) {
       throw new IllegalArgumentException("URL cannot be null");
     }
@@ -31,7 +31,7 @@ public class RestRequest {
     this.headers = Collections.unmodifiableMap(headers);
     this.method = method;
     this.timeout = timeout;
-    this.bodyHandler = bodyHandler;
+    this.bodyProcessor = bodyProcessor;
   }
 
   public static Builder builder(String endpoint) {
@@ -55,11 +55,11 @@ public class RestRequest {
   }
 
   public boolean hasOutput() {
-    return bodyHandler != null;
+    return bodyProcessor != null;
   }
 
-  public BodyHandler getOutput() {
-    return bodyHandler;
+  public BodyProcessor getOutput() {
+    return bodyProcessor;
   }
 
   /**
@@ -73,7 +73,7 @@ public class RestRequest {
     private String method = GET;
     private Integer timeout = null;
 
-    private BodyHandler bodyHandler;
+    private BodyProcessor bodyProcessor;
 
     public Builder(String endpoint) {
       this.endpoint = endpoint;
@@ -105,8 +105,8 @@ public class RestRequest {
       return method(POST);
     }
 
-    public Builder output(BodyHandler bodyHandler) {
-      this.bodyHandler = bodyHandler;
+    public Builder body(BodyProcessor bodyProcessor) {
+      this.bodyProcessor = bodyProcessor;
       return this;
     }
 
@@ -140,7 +140,7 @@ public class RestRequest {
     }
 
     public RestRequest build() {
-      return new RestRequest(endpointWithParameters(), headers, method, timeout, bodyHandler);
+      return new RestRequest(endpointWithParameters(), headers, method, timeout, bodyProcessor);
     }
 
     private String endpointWithParameters() {
