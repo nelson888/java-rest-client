@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.request.handler.output;
+package com.tambapps.http.restclient.request.handler.body;
 
 import java.io.IOException;
 import java.net.URLConnection;
@@ -11,7 +11,7 @@ public interface BodyHandler {
   /**
    * Prepare and write the body content on the url connection
    * @param connection the connection to write to
-   * @throws IOException exceptions can occur when writing to connection output stream
+   * @throws IOException exceptions can occur when writing to connection body stream
    */
   void prepareConnection(URLConnection connection) throws IOException;
 

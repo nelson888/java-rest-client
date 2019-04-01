@@ -3,7 +3,7 @@ package com.tambapps.http.restclient;
 import static org.junit.Assert.assertTrue;
 
 import com.tambapps.http.restclient.request.RestRequest;
-import com.tambapps.http.restclient.request.handler.output.BodyHandlers;
+import com.tambapps.http.restclient.request.handler.body.BodyHandlers;
 import com.tambapps.http.restclient.response.RestResponse;
 
 import org.junit.Before;

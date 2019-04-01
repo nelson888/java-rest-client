@@ -1,12 +1,9 @@
 package com.tambapps.http.restclient.request;
 
-import com.tambapps.http.restclient.request.handler.output.BodyHandler;
+import com.tambapps.http.restclient.request.handler.body.BodyHandler;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import static com.tambapps.http.restclient.methods.HttpMethods.*;

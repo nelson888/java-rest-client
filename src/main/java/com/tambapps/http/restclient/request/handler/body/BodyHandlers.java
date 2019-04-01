@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.request.handler.output;
+package com.tambapps.http.restclient.request.handler.body;
 
 import com.tambapps.http.restclient.util.BytesContainer;
 import com.tambapps.http.restclient.util.IOUtils;
@@ -75,6 +75,18 @@ public final class BodyHandlers {
   public static BodyHandler multipartStream(ISSupplier isSupplier, String name, String key,
       int bufferSize) {
     return new MultipartInputStreamBodyHandler(isSupplier, key, name, bufferSize);
+  }
+
+  public static BodyHandler bytes(byte[] bytes) {
+    return new BytesBodyHandler(bytes);
+  }
+
+  public static BodyHandler stream(ISSupplier isSupplier) {
+    return new InputStreamHandler(isSupplier);
+  }
+
+  public static BodyHandler file(File file) {
+    return new FileBodyHandler(file);
   }
 
   private static class StringBodyHandler extends AbstractBodyHandler {
@@ -213,6 +225,52 @@ public final class BodyHandlers {
     void writeMultipart(DataOutputStream request, int bufferSize) throws IOException {
       byte[] bytes = bytesContainer.getBytes();
       request.write(bytes);
+    }
+  }
+
+  private static class BytesBodyHandler extends AbstractBodyHandler {
+
+    private final byte[] bytes;
+
+    public BytesBodyHandler(byte[] bytes) {
+      this.bytes = bytes;
+    }
+
+    @Override
+    void writeContent(OutputStream os) throws IOException {
+      os.write(bytes, 0, bytes.length);
+    }
+  }
+
+  private static class FileBodyHandler extends AbstractBodyHandler {
+
+    private final File file;
+
+    public FileBodyHandler(File file) {
+      this.file = file;
+    }
+
+    @Override
+    void writeContent(OutputStream os) throws IOException {
+      try (InputStream is = new FileInputStream(file)) {
+        IOUtils.copy(is, os);
+      }
+    }
+  }
+
+  private static class InputStreamHandler extends AbstractBodyHandler {
+
+    private final ISSupplier supplier;
+
+    public InputStreamHandler(ISSupplier supplier) {
+      this.supplier = supplier;
+    }
+
+    @Override
+    void writeContent(OutputStream os) throws IOException {
+      try (InputStream is = supplier.get()) {
+        IOUtils.copy(is, os);
+      }
     }
   }
 }

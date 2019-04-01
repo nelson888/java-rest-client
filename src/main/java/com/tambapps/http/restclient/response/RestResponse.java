@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class representing the output of a rest response where error type and success type can be different
+ * Class representing the body of a rest response where error type and success type can be different
  * @param <SuccessT> the success type of the response
  * @param <ErrorT> the error type of the response
  */

@@ -1,13 +1,12 @@
 package com.tambapps.http.restclient;
 
 import com.tambapps.http.restclient.request.RestRequest;
-import com.tambapps.http.restclient.request.handler.output.BodyHandlers;
+import com.tambapps.http.restclient.request.handler.body.BodyHandlers;
 import com.tambapps.http.restclient.response.RestResponse;
 
 import org.junit.Test;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

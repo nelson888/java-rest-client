@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.request.handler.output;
+package com.tambapps.http.restclient.request.handler.body;
 
 import java.io.IOException;
 import java.io.OutputStream;
