@@ -15,4 +15,5 @@ public interface ObjectListParser {
    * @return the converted object from the string
    */
   <T> List<T> parse(Class<T> clazz, String data);
+
 }
