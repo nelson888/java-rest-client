@@ -75,7 +75,7 @@ public class RestRequest {
 
     private BodyProcessor bodyProcessor;
 
-    public Builder(String endpoint) {
+    private Builder(String endpoint) {
       this.endpoint = endpoint;
     }
 
