@@ -25,8 +25,17 @@ public class AsyncRestClient extends AbstractRestClient {
    * @param nbThreads the number of possible simultaneous requests
    */
   public AsyncRestClient(String baseUrl, int nbThreads) {
+    this(baseUrl, Executors.newFixedThreadPool(nbThreads));
+  }
+
+  /**
+   *
+   * @param baseUrl the base url of the rest api
+   * @param executor the executor that will execute the requests
+   */
+  public AsyncRestClient(String baseUrl, ExecutorService executor) {
     super(baseUrl);
-    executor = Executors.newFixedThreadPool(nbThreads);
+    this.executor = executor;
   }
 
   public void execute(final RestRequest request) {
