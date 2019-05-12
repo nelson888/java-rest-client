@@ -1,6 +1,9 @@
 package com.tambapps.http.restclient;
 
 import com.tambapps.http.restclient.request.RestRequest;
+import com.tambapps.http.restclient.response.ErrorResponse;
+import com.tambapps.http.restclient.response.HttpHeaders;
+import com.tambapps.http.restclient.response.SuccessResponse;
 import com.tambapps.http.restclient.response.handler.ResponseHandler;
 import com.tambapps.http.restclient.response.RestResponse;
 import com.tambapps.http.restclient.util.IOUtils;
@@ -57,9 +60,7 @@ public class AbstractRestClient {
     return connection;
   }
 
-  protected  <SuccessT, ErrorT> RestResponse<SuccessT, ErrorT> doExecute(RestRequest request,
-                                                                   ResponseHandler<SuccessT> successResponseHandler,
-                                                                   ResponseHandler<ErrorT> errorResponseHandler) {
+  protected  <T> RestResponse<T> doExecute(RestRequest request, ResponseHandler<T> successResponseHandler) {
     HttpURLConnection connection;
     try {
       connection = prepareConnection(request);
@@ -67,7 +68,7 @@ public class AbstractRestClient {
         request.getOutput().prepareConnection(connection);
       }
     } catch (IOException e) {
-      return new RestResponse<>(e);
+      return new ErrorResponse<>();
     }
 
     Map<String, List<String>> responseHeaders = new HashMap<>();
@@ -76,17 +77,18 @@ public class AbstractRestClient {
 
       responseCode = connection.getResponseCode();
       responseHeaders.putAll(connection.getHeaderFields());
-      RestResponse<SuccessT, ErrorT> response;
       boolean isErrorCode = IOUtils.isErrorCode(responseCode);
-      ResponseHandler<?> responseHandler = isErrorCode ? errorResponseHandler : successResponseHandler;
-      try (InputStream stream = isErrorCode ?
+      try (InputStream is = isErrorCode ?
           connection.getErrorStream() :
           connection.getInputStream()) {
-        response = new RestResponse<>(responseCode, responseHandler.convert(stream), responseHeaders);
+        if (isErrorCode) {
+          return  new ErrorResponse<>(responseCode, new HttpHeaders(responseHeaders), IOUtils.toBytes(is));
+        } else {
+          return new SuccessResponse<>(responseCode, new HttpHeaders(responseHeaders), successResponseHandler.convert(is));
+        }
       }
-      return response;
     } catch (IOException e) {
-      return new RestResponse<>(responseCode, e, responseHeaders);
+      return new ErrorResponse<>(responseCode, new HttpHeaders(responseHeaders));
     } finally {
       connection.disconnect();
     }

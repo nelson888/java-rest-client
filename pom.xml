@@ -6,7 +6,7 @@
 
   <groupId>com.tambapps.http</groupId>
   <artifactId>restclient</artifactId>
-  <version>2.0</version>
+  <version>3.0</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,4 +54,10 @@
       <version>2.8.5</version>
     </dependency>
   </dependencies>
+  <distributionManagement>
+    <repository>
+      <id>bintray-repo-maven</id>
+      <url>https://api.bintray.com/maven/tambapps/maven-public/restclient/;publish=1</url>
+    </repository>
+  </distributionManagement>
 </project>

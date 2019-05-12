@@ -28,9 +28,9 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
     RestRequest request = RestRequest.builder("posts/1")
         .GET()
         .build();
-    client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post, Void>() {
+    client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post>() {
       @Override
-      public void call(RestResponse<Post, Void> response) {
+      public void call(RestResponse<Post> response) {
         getAsserts(response);
         latch.countDown();
       }
@@ -48,9 +48,9 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
         .body(BodyProcessors.json(GSON.toJson(post)))
         .build();
 
-    client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post, Void>() {
+    client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post>() {
       @Override
-      public void call(RestResponse<Post, Void> response) {
+      public void call(RestResponse<Post> response) {
         putAsserts(response, post);
         latch.countDown();
       }
@@ -66,9 +66,9 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
         .body(BodyProcessors.json(GSON.toJson(post)))
         .build();
 
-    client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post, Void>() {
+    client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post>() {
       @Override
-      public void call(RestResponse<Post, Void> response) {
+      public void call(RestResponse<Post> response) {
         postAsserts(response, post);
         latch.countDown();
       }
@@ -82,9 +82,9 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
     RestRequest request = RestRequest.builder("posts/1")
         .DELETE()
         .build();
-    client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post, Void>() {
+    client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post>() {
       @Override
-      public void call(RestResponse<Post, Void> response) {
+      public void call(RestResponse<Post> response) {
         deleteAsserts(response);
         latch.countDown();
       }
@@ -97,9 +97,9 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
     RestRequest request = RestRequest.builder("/posts")
       .GET()
       .build();
-    client.execute(request, LIST_RESPONSE_HANDLER, new AsyncRestClient.Callback<List<Post>, Void>() {
+    client.execute(request, LIST_RESPONSE_HANDLER, new AsyncRestClient.Callback<List<Post>>() {
       @Override
-      public void call(RestResponse<List<Post>, Void> response) {
+      public void call(RestResponse<List<Post>> response) {
         getListAsserts(response);
         latch.countDown();
       }
@@ -115,9 +115,9 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
       .parameter("userId", userId)
       .GET()
       .build();
-    client.execute(request, LIST_RESPONSE_HANDLER, new AsyncRestClient.Callback<List<Post>, Void>() {
+    client.execute(request, LIST_RESPONSE_HANDLER, new AsyncRestClient.Callback<List<Post>>() {
       @Override
-      public void call(RestResponse<List<Post>, Void> response) {
+      public void call(RestResponse<List<Post>> response) {
         getListAssertsWithUserId(response, userId);
         latch.countDown();
       }

@@ -22,7 +22,21 @@ The ResponseHandler interface handles the response given by the REST server. It 
 of the URLConnection into a given type. Some of them are implemented in ResponseHandlers.
 Feel free to implement your own by implementing ResponseHandler
 
-### Examples
+### RestResponse
+It is the representation of a response from a REST service.
+
+### ObjectParser
+This interface is used to parse data from a RestResponse and convert it into 
+a given class. It is useful to convert a response body into an object when using it with 
+`ResponseHandlers.objectHandler(...)` or `ResponseHandlers.objectListHandler(...)`. For example, it could be a JSON, or XML parser.
+
+
+### ObjectConverter
+The ObjectConverter is an ObjectParser that can also `stringify` objects, meaning
+that it can for example convert an object into json to put it an a request body
+with `BodyProcessors.json(...)`.
+
+## Examples
 Send a request synchronously:
 ```java
 RestClient client = new RestClient(API_URL);
@@ -35,11 +49,9 @@ final ResponseHandler<Post> errorResponseHandler =
     ResponseHandlers.objectHandler(ErrorResponse.class, JSON_PARSER);
 RestResponse<Post, ErrorResponse> response = client.execute(request, responseHandler, errorResponseHandler);
 if (response.isSuccessful()) {
-  handlePost(response.getSuccessData());
+  handlePost(response.getData());
 } else if (response.isErrorResponse()) {
-  handleError(response.getErrorData());
-} else { // has exception
-  handleException(response.getException());
+  handleError(response.getErrorData(ResponseHandlers.stringHandler()));
 }
 ```
 
@@ -48,16 +60,15 @@ Or asynchronously:
 RestClient client = new AsyncRestClient(API_URL);
 RestRequest request = RestRequest.builder("posts/" + id)
         .PUT()
-        .body(BodyProcessors.json(gson.toJson(post)))
+        .body(BodyProcessors.json(objectConverter.stringify(post)))
         .build();
 client.execute(request, 
     RESPONSE_HANDLER, 
-    ERROR_RESPONSE_HANDLER, 
-    new RestClient.Callback<Post, ErrorResponse>() {
+    new RestClient.Callback<Post>() {
       @Override
-      public void call(RestResponse<Post, ErrorResponse> response) {
+      public void call(RestResponse<Post> response) {
         if (response.isSuccessful()) {
-          handlePost(response.getSuccessData());
+          handlePost(response.getData());
         }
       }
     });
@@ -72,9 +83,9 @@ RestRequest request = RestRequest.builder(FILE_STORAGE_ENDPOINT)
         .build();
         
 client.execute(request, ResponseHandlers.stringHandler(),
-        new RestClient.Callback<String, Void>() {
+        new RestClient.Callback<String>() {
               @Override
-              public void call(RestResponse<String, Void> response) {
+              public void call(RestResponse<String> response) {
                 print(response.getData());
               }
             });
@@ -86,10 +97,9 @@ RestRequest request = RestRequest.builder(FILE_STORAGE_ENDPOINT + fileId)
         .GET()
         .build();
 client.execute(request, ResponseHandlers.multipartFileHandler(file),
-        ResponseHandlers.stringHandler(),
         new RestClient.Callback<File, String>() {
               @Override
-              public void call(RestResponse<File, String> response) {
+              public void call(RestResponse<File> response) {
                 if (response.isSuccessful()) {
                   print("File saved successfully");
                 } else {
@@ -107,5 +117,5 @@ RestRequest request = RestRequest.builder("/posts")
     .build();
 final ResponseHandler<List<Post>> listResponseHandler = 
     ResponseHandlers.objectListHandler(Post.class, JSON_LIST_PARSER);
-RestResponse<List<Post>, ?> response = client.execute(request, listResponseHandler);
+RestResponse<List<Post>> response = client.execute(request, listResponseHandler);
 ```

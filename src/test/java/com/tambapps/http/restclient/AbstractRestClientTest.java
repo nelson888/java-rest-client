@@ -39,11 +39,11 @@ public abstract class AbstractRestClientTest {
   static final ResponseHandler<List<Post>> LIST_RESPONSE_HANDLER =
     ResponseHandlers.objectListHandler(Post.class, JSON_LIST_PARSER);
 
-  void getAsserts(RestResponse<Post, ?> response) {
+  void getAsserts(RestResponse<Post> response) {
     assertTrue("Should be successful", response.isSuccessful());
     assertFalse("Shouldn't be an error code", response.isErrorResponse());
 
-    assertPost(response.getSuccessData());
+    assertPost(response.getData());
   }
 
   private void assertPost(Post post) {
@@ -53,38 +53,38 @@ public abstract class AbstractRestClientTest {
     assertNotNull("Shouldn't be null", post.getBody());
     assertNotNull("Shouldn't be null", post.getTitle());
   }
-  void getListAsserts(RestResponse<List<Post>, ?> response) {
+  void getListAsserts(RestResponse<List<Post>> response) {
     assertTrue("Should be successful", response.isSuccessful());
     assertFalse("Shouldn't be an error code", response.isErrorResponse());
 
-    for (Post post : response.getSuccessData()) {
+    for (Post post : response.getData()) {
       assertPost(post);
     }
   }
 
-  void getListAssertsWithUserId(RestResponse<List<Post>, ?> response, int userId) {
+  void getListAssertsWithUserId(RestResponse<List<Post>> response, int userId) {
     getListAsserts(response);
-    for (Post post : response.getSuccessData()) {
+    for (Post post : response.getData()) {
       assertEquals("Should be equal", userId, (int) post.getUserId());
     }
   }
 
-  void putAsserts(RestResponse<Post, ?> response, Post post) {
+  void putAsserts(RestResponse<Post> response, Post post) {
     assertFalse("Shouldn't be an error code", response.isErrorResponse());
     assertTrue("Should be successful", response.isSuccessful());
-    assertEquals("Should be equal", post, response.getSuccessData());
+    assertEquals("Should be equal", post, response.getData());
   }
 
-  void postAsserts(RestResponse<Post, ?> response, Post post) {
+  void postAsserts(RestResponse<Post> response, Post post) {
     assertTrue("Should be successful", response.isSuccessful());
     assertFalse("Shouldn't be null", response.isErrorResponse());
-    Post responseData = response.getSuccessData();
+    Post responseData = response.getData();
     assertEquals("Should be equal", post.getUserId(), responseData.getUserId());
     assertEquals("Should be equal", post.getTitle(), responseData.getTitle());
     assertEquals("Should be equal", post.getBody(), responseData.getBody());
   }
 
-  void deleteAsserts(RestResponse<Post, ?> response) {
+  void deleteAsserts(RestResponse<Post> response) {
     assertTrue("Should be successful", response.isSuccessful());
     assertFalse("Shouldn't be an error code", response.isErrorResponse());
   }

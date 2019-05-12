@@ -21,7 +21,7 @@ public class RestClientTest extends AbstractRestClientTest {
         .GET()
         .build();
 
-    RestResponse<Post, ?> response = client.execute(request, RESPONSE_HANDLER);
+    RestResponse<Post> response = client.execute(request, RESPONSE_HANDLER);
     getAsserts(response);
   }
 
@@ -34,7 +34,7 @@ public class RestClientTest extends AbstractRestClientTest {
         .body(BodyProcessors.json(GSON.toJson(post)))
         .build();
 
-    RestResponse<Post, ?> response = client.execute(request, RESPONSE_HANDLER);
+    RestResponse<Post> response = client.execute(request, RESPONSE_HANDLER);
     putAsserts(response, post);
   }
   @Test
@@ -45,13 +45,13 @@ public class RestClientTest extends AbstractRestClientTest {
         .body(BodyProcessors.json(GSON.toJson(post)))
         .build();
 
-    RestResponse<Post, ?> response = client.execute(request, RESPONSE_HANDLER);
+    RestResponse<Post> response = client.execute(request, RESPONSE_HANDLER);
     postAsserts(response, post);
   }
 
   @Test
   public void deleteTest() {
-    RestResponse<Post, ?> response = client.execute(RestRequest.builder("posts/1")
+    RestResponse<Post> response = client.execute(RestRequest.builder("posts/1")
         .DELETE()
         .build(), RESPONSE_HANDLER);
     deleteAsserts(response);
@@ -63,7 +63,7 @@ public class RestClientTest extends AbstractRestClientTest {
       .GET()
       .build();
 
-    RestResponse<List<Post>, ?> response = client.execute(request, LIST_RESPONSE_HANDLER);
+    RestResponse<List<Post>> response = client.execute(request, LIST_RESPONSE_HANDLER);
     getListAsserts(response);
   }
 
@@ -75,7 +75,7 @@ public class RestClientTest extends AbstractRestClientTest {
       .GET()
       .build();
 
-    RestResponse<List<Post>, ?> response = client.execute(request, LIST_RESPONSE_HANDLER);
+    RestResponse<List<Post>> response = client.execute(request, LIST_RESPONSE_HANDLER);
     getListAssertsWithUserId(response, userId);
   }
 }

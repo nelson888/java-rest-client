@@ -43,17 +43,12 @@ public class AsyncRestClient extends AbstractRestClient {
   }
 
   public <T> void execute(final RestRequest request,
-                               final ResponseHandler<T> responseHandler, final Callback<T, Void> callback) {
-    execute(request, responseHandler, ResponseHandlers.noResponse(), callback);
-  }
-  public <SuccessT, ErrorT> void execute(final RestRequest request,
-                                              final ResponseHandler<SuccessT> successResponseHandler,
-                                              final ResponseHandler<ErrorT> errorResponseHandler,
-                                              final Callback<SuccessT, ErrorT> callback) {
+                                              final ResponseHandler<T> successResponseHandler,
+                                              final Callback<T> callback) {
     executor.submit(new Runnable() {
       @Override
       public void run() {
-        RestResponse<SuccessT, ErrorT> response = doExecute(request, successResponseHandler, errorResponseHandler);
+        RestResponse<T> response = doExecute(request, successResponseHandler);
         if (callback != null) callback.call(response);
       }
     });
@@ -65,7 +60,7 @@ public class AsyncRestClient extends AbstractRestClient {
     }
   }
 
-  public interface Callback<SuccessT, ErrorT> {
-    void call(RestResponse<SuccessT, ErrorT> response);
+  public interface Callback<T> {
+    void call(RestResponse<T> response);
   }
 }

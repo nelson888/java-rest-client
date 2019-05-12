@@ -44,7 +44,15 @@ public final class IOUtils {
     return toByteArray(is, DEFAULT_BUFFER_SIZE);
   }
 
+  public static byte[] toBytes(InputStream is) throws IOException {
+    return toBytes(is, DEFAULT_BUFFER_SIZE);
+  }
+
   public static BytesContainer toByteArray(InputStream is, int bufferSize) throws IOException {
+    return new BytesContainer(toBytes(is, bufferSize));
+  }
+
+  public static byte[] toBytes(InputStream is, int bufferSize) throws IOException {
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
     int nRead;
@@ -54,7 +62,7 @@ public final class IOUtils {
       buffer.write(data, 0, nRead);
     }
 
-    return new BytesContainer(buffer.toByteArray());
+    return data;
   }
 
 }
