@@ -1,18 +1,18 @@
 package com.tambapps.http.restclient;
 
 import com.tambapps.http.restclient.request.RestRequest;
-import com.tambapps.http.restclient.response.ErrorResponse;
 import com.tambapps.http.restclient.response.HttpHeaders;
-import com.tambapps.http.restclient.response.SuccessResponse;
 import com.tambapps.http.restclient.response.handler.ResponseHandler;
 import com.tambapps.http.restclient.response.RestResponse;
 import com.tambapps.http.restclient.util.IOUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,4 +106,112 @@ public class AbstractRestClient {
     return jwt;
   }
 
+
+  private static abstract class AbstractRestResponse<T> implements RestResponse<T> {
+
+    private final int responseCode;
+    private final HttpHeaders headers;
+
+    public AbstractRestResponse(int responseCode, HttpHeaders headers) {
+      this.responseCode = responseCode;
+      this.headers = headers;
+    }
+
+    @Override
+    public HttpHeaders getHeaders() {
+      return headers;
+    }
+
+    @Override
+    public int getResponseCode() {
+      return responseCode;
+    }
+
+  }
+
+  private static class SuccessResponse<T> extends AbstractRestResponse<T> {
+
+    private final T data;
+
+    SuccessResponse(int responseCode, HttpHeaders headers, T data) {
+      super(responseCode, headers);
+      this.data = data;
+    }
+
+    @Override
+    public boolean isErrorResponse() {
+      return false;
+    }
+
+    @Override
+    public boolean isSuccessful() {
+      return true;
+    }
+
+    @Override
+    public T getData() {
+      return data;
+    }
+
+    @Override
+    public <ErrorT> ErrorT getErrorData(ResponseHandler<ErrorT> responseHandler) {
+      return null;
+    }
+
+    @Override
+    public byte[] getRawErrorData() {
+      return null;
+    }
+  }
+
+  private class ErrorResponse<T> extends AbstractRestResponse<T> {
+
+    private final byte[] bytes;
+
+    ErrorResponse() { //no response
+      this(REQUEST_NOT_SENT, new HttpHeaders(Collections.<String, List<String>>emptyMap()));
+    }
+
+    ErrorResponse(int responseCode, HttpHeaders headers) {
+      this(responseCode, headers, null);
+    }
+
+    ErrorResponse(int responseCode, HttpHeaders headers, byte[] bytes) {
+      super(responseCode, headers);
+      this.bytes = bytes;
+    }
+
+    @Override
+    public boolean isErrorResponse() {
+      return true;
+    }
+
+    @Override
+    public boolean isSuccessful() {
+      return false;
+    }
+
+    @Override
+    public T getData() {
+      return null;
+    }
+
+    @Override
+    public <ErrorT> ErrorT getErrorData(ResponseHandler<ErrorT> responseHandler) {
+      if (bytes == null) {
+        return null;
+      }
+      try (ByteArrayInputStream is = new ByteArrayInputStream(bytes)) {
+        return responseHandler.convert(is);
+      } catch (IOException e) {
+        return null;
+      }
+    }
+
+    @Override
+    public byte[] getRawErrorData() {
+      return bytes;
+    }
+
+  }
 }
