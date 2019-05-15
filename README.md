@@ -6,7 +6,9 @@ a client that can send requests to a REST server. It was written in Java 7
 ## Architecture
 
 ### RestClient
-It is the main class of this library, that will send your requests synchronously/asynchronously. 
+It is the main class of this library, that will send your requests synchronously/asynchronously. *
+You can also set a JWT token that will be added in every requests for JWT authentication with the
+`setJwt(String jwt)` method.
 
 ### RestRequest
 The RestRequest holds the data of an Http request to a REST service.
@@ -97,7 +99,7 @@ RestRequest request = RestRequest.builder(FILE_STORAGE_ENDPOINT + fileId)
         .GET()
         .build();
 client.execute(request, ResponseHandlers.multipartFileHandler(file),
-        new RestClient.Callback<File, String>() {
+        new RestClient.Callback<File>() {
               @Override
               public void call(RestResponse<File> response) {
                 if (response.isSuccessful()) {
