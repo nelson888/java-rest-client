@@ -27,4 +27,8 @@ out
 /.nb-gradle/
 
 
-settings.xml
+.gradle/
+gradle/
+classes/
+gradlew
+gradlew.bat
