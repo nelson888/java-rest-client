@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Util class implementing diferent {@link ResponseHandler}
+ * Util class implementing different {@link ResponseHandler}
  */
 public final class ResponseHandlers {
 
@@ -49,8 +49,7 @@ public final class ResponseHandlers {
     }
   };
 
-  private ResponseHandlers() {
-  }
+  private ResponseHandlers() {}
 
   public static ResponseHandler<String> stringHandler() {
     return STRING_HANDLER;
@@ -71,18 +70,37 @@ public final class ResponseHandlers {
     };
   }
 
+  /**
+   * Response handler returning raw response into a byte array
+   * @return response handler converting to byte array
+   */
   public static ResponseHandler<BytesContainer> bytesHandler() {
     return BYTES_HANDLER;
   }
 
+  /**
+   * Response handler returning multipart response into a byte array
+   * @return response handler converting multipart response to byte array
+   */
   public static ResponseHandler<BytesContainer> multipartBytesHandler() {
     return bytesHandler();
   }
 
+  /**
+   * handler writing response into a file
+   * @param file the file to write the response content to
+   * @return response handler writing in given file
+   */
   public static ResponseHandler<File> multipartFileHandler(File file) {
     return multipartFileHandler(file, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
+  /**
+   * handler writing response into a file
+   * @param file the file to write the response content to
+   * @param bufferSize the buffer size
+   * @return response handler writing in given file
+   */
   public static ResponseHandler<File> multipartFileHandler(final File file,
                                                            final int bufferSize) {
     return new ResponseHandler<File>() {
@@ -99,10 +117,21 @@ public final class ResponseHandlers {
     };
   }
 
+  /**
+   * handler writing response into a file
+   * @param filePath the path of the file to write the response content to
+   * @return response handler writing in given file
+   */
   public static ResponseHandler<File> multipartFileHandler(String filePath) {
     return multipartFileHandler(filePath, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
+  /**
+   * handler writing response into a file
+   * @param filePath the path of the file to write the response content to
+   * @param bufferSize the buffer size
+   * @return response handler writing in given file
+   */
   public static ResponseHandler<File> multipartFileHandler(final String filePath,
                                                            final int bufferSize) {
     return new ResponseHandler<File>() {
@@ -120,6 +149,13 @@ public final class ResponseHandlers {
     };
   }
 
+  /**
+   * handler converting response into an object
+   * @param tClass the class o the object
+   * @param parser the parser
+   * @param <T> the type of the object
+   * @return handler converting the response into an object
+   */
   public static <T> ResponseHandler<T> objectHandler(final Class<T> tClass,
                                                      final ObjectParser parser) {
     return new ResponseHandler<T>() {
@@ -130,6 +166,13 @@ public final class ResponseHandlers {
     };
   }
 
+  /**
+   * handler converting response into a list of objects
+   * @param tClass the class of the objects
+   * @param parser the parser
+   * @param <T> the type of the object
+   * @return handler converting the response into a list of objects
+   */
   public static <T> ResponseHandler<List<T>> objectListHandler(final Class<T> tClass,
       final ObjectListParser parser) {
     return new ResponseHandler<List<T>>() {
@@ -140,6 +183,13 @@ public final class ResponseHandlers {
     };
   }
 
+  /**
+   * handler converting response into a set of objects
+   * @param tClass the class of the objects
+   * @param parser the parser
+   * @param <T> the type of the object
+   * @return handler converting the response into a set of objects
+   */
   public static <T> ResponseHandler<Set<T>> objectSetHandler(final Class<T> tClass,
       final ObjectSetParser parser) {
     return new ResponseHandler<Set<T>>() {
@@ -150,6 +200,10 @@ public final class ResponseHandlers {
     };
   }
 
+  /**
+   * handler for ignoring the response
+   * @return a handler ignoring the response
+   */
   public static ResponseHandler<Void> noResponse() {
     return NO_RESPONSE;
   }

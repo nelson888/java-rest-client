@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.methods;
+package com.tambapps.http.restclient.request;
 
 public final class HttpMethods {
 

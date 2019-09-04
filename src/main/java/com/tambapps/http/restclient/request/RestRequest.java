@@ -1,10 +1,10 @@
 package com.tambapps.http.restclient.request;
 
+import static com.tambapps.http.restclient.request.HttpMethods.*;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.tambapps.http.restclient.methods.HttpMethods.*;
 
 import com.tambapps.http.restclient.request.body.BodyProcessor;
 
@@ -34,31 +34,56 @@ public class RestRequest {
     this.bodyProcessor = bodyProcessor;
   }
 
+  /**
+   * Returns a new request builder for a given endpoint
+   * @param endpoint the endpoint of the request
+   * @return the request builde
+   */
   public static Builder builder(String endpoint) {
     return new Builder(endpoint);
   }
 
+  /**
+   * Returns the endpoint
+   * @return the endpoint
+   */
   public String getEndpoint() {
     return endpoint;
   }
 
+  /**
+   * Returns the method
+   * @return the method
+   */
   public String getMethod() {
     return method;
   }
 
+  /**
+   * Returns the timeout
+   * @return the timeout
+   */
   public Integer getTimeout() {
     return timeout;
   }
 
+  /**
+   * Returns the headers
+   * @return the headers
+   */
   public Map<String, String> getHeaders() {
     return headers;
   }
 
+  /**
+   * Returns whether the output of the request will be handled or not
+   * @return whether the output of the request will be handled or not
+   */
   public boolean hasOutput() {
     return bodyProcessor != null;
   }
 
-  public BodyProcessor getOutput() {
+  public BodyProcessor getOutputProcessor() {
     return bodyProcessor;
   }
 
@@ -79,47 +104,93 @@ public class RestRequest {
       this.endpoint = endpoint;
     }
 
+    /**
+     * Sets the time out of the request (null means no timeout)
+     * @param durationInMillis the duration in milliseconds
+     * @return this
+     */
     public Builder timeout(Integer durationInMillis) {
       timeout = durationInMillis;
       return this;
     }
 
+    /**
+     * Sets the method of the request
+     * @param method the method
+     * @return this
+     */
     public Builder method(String method) {
       this.method = method;
       return this;
     }
 
+    /**
+     * Sets the method of the request to 'GET'
+     * @return this
+     */
     public Builder GET() {
       return method(GET);
     }
 
+    /**
+     * Sets the method of the request to 'DELETE'
+     * @return this
+     */
     public Builder DELETE() {
       return method(DELETE);
     }
 
+    /**
+     * Sets the method of the request to 'PUT'
+     * @return this
+     */
     public Builder PUT() {
       return method(PUT);
     }
 
+    /**
+     * Sets the method of the request to 'POST'
+     * @return this
+     */
     public Builder POST() {
       return method(POST);
     }
 
+    /**
+     * Sets the body processor of this request
+     * @param bodyProcessor the body processor
+     * @return this
+     */
     public Builder body(BodyProcessor bodyProcessor) {
       this.bodyProcessor = bodyProcessor;
       return this;
     }
 
+    /**
+     * Sets a header for this request
+     * @param name the name of the header
+     * @param value the value of the header
+     * @return
+     */
     public Builder header(String name, String value) {
       headers.put(name, value);
       return this;
     }
 
+    /**
+     * Adds the given headers to the request
+     * @param headers the headers
+     * @return this
+     */
     public Builder headers(Map<String, String> headers) {
       this.headers.putAll(headers);
       return this;
     }
 
+    /**
+     * Add the pairs (name, value) as headers to this request
+     * @param args the pairs (name, value)
+     */
     public void headers(String... args) {
       if (args.length % 2 != 0) {
         throw new IllegalArgumentException("Should have pairs of (entry, value)");
@@ -129,16 +200,31 @@ public class RestRequest {
       }
     }
 
+    /**
+     * Adds an url parameter to this request
+     * @param urlParameter the url parameter
+     * @param value the value of this parameter
+     * @return this
+     */
     public Builder parameter(String urlParameter, Object value) {
       this.parameters.put(urlParameter, value);
       return this;
     }
 
+    /**
+     * Adds url parameters to this request
+     * @param parameters the url parameters an their values
+     * @return this
+     */
     public Builder parameters(Map<String, Object> parameters) {
       this.parameters.putAll(parameters);
       return this;
     }
 
+    /**
+     * Build the rest request
+     * @return the rest request
+     */
     public RestRequest build() {
       return new RestRequest(endpointWithParameters(), headers, method, timeout, bodyProcessor);
     }

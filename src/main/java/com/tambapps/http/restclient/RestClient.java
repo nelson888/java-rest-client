@@ -18,10 +18,21 @@ public class RestClient extends AbstractRestClient {
     super(baseUrl);
   }
 
+  /**
+   * Execute an http request
+   * @param request the request to execute
+   * @return the response of the server
+   */
   public RestResponse<Void> execute(RestRequest request) {
     return execute(request, ResponseHandlers.noResponse());
   }
 
+  /**
+   * Execute an http request
+   * @param request the request to execute
+   * @param responseHandler the response handler
+   * @return the response of the server
+   */
   public <T> RestResponse<T> execute(RestRequest request, ResponseHandler<T> responseHandler) {
     return doExecute(request, responseHandler);
   }

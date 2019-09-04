@@ -38,6 +38,10 @@ public class AsyncRestClient extends AbstractRestClient {
     this.executor = executor;
   }
 
+  /**
+   * Execute asynchronously the given request
+   * @param request the request
+   */
   public void execute(final RestRequest request) {
     execute(request, ResponseHandlers.noResponse(), null);
   }

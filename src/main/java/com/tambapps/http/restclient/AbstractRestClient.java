@@ -65,7 +65,7 @@ public class AbstractRestClient {
     try {
       connection = prepareConnection(request);
       if (request.hasOutput()) {
-        request.getOutput().prepareConnection(connection);
+        request.getOutputProcessor().prepareConnection(connection);
       }
     } catch (IOException e) {
       return new ErrorResponse<>();
