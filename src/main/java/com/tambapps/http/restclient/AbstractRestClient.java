@@ -68,7 +68,7 @@ public class AbstractRestClient {
         request.getOutputProcessor().prepareConnection(connection);
       }
     } catch (IOException e) {
-      return new ErrorResponse<>();
+      return new ErrorResponse<>(e.getMessage().getBytes());
     }
 
     Map<String, List<String>> responseHeaders = new HashMap<>();
@@ -88,7 +88,7 @@ public class AbstractRestClient {
         }
       }
     } catch (IOException e) {
-      return new ErrorResponse<>(responseCode, new HttpHeaders(responseHeaders));
+      return new ErrorResponse<>(responseCode, new HttpHeaders(responseHeaders), e.getMessage().getBytes());
     } finally {
       connection.disconnect();
     }
@@ -168,12 +168,8 @@ public class AbstractRestClient {
 
     private final byte[] bytes;
 
-    ErrorResponse() { //no response
-      this(REQUEST_NOT_SENT, new HttpHeaders(Collections.<String, List<String>>emptyMap()));
-    }
-
-    ErrorResponse(int responseCode, HttpHeaders headers) {
-      this(responseCode, headers, null);
+    ErrorResponse(byte[] bytes) { //no response
+      this(REQUEST_NOT_SENT, new HttpHeaders(Collections.<String, List<String>>emptyMap()), bytes);
     }
 
     ErrorResponse(int responseCode, HttpHeaders headers, byte[] bytes) {
