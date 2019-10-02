@@ -74,7 +74,6 @@ public class AbstractRestClient {
     Map<String, List<String>> responseHeaders = new HashMap<>();
     int responseCode = RestResponse.REQUEST_NOT_SENT;
     try {
-
       responseCode = connection.getResponseCode();
       responseHeaders.putAll(connection.getHeaderFields());
       boolean isErrorCode = IOUtils.isErrorCode(responseCode);
@@ -164,7 +163,7 @@ public class AbstractRestClient {
     }
   }
 
-  private class ErrorResponse<T> extends AbstractRestResponse<T> {
+  private static class ErrorResponse<T> extends AbstractRestResponse<T> {
 
     private final byte[] bytes;
 
