@@ -22,6 +22,7 @@ import java.util.Map;
  */
 public class AbstractRestClient {
 
+  // should
   private final String baseUrl;
   private String jwt = null;
 
@@ -35,12 +36,9 @@ public class AbstractRestClient {
 
   private URL getUrl(String endpoint) throws MalformedURLException {
     if (baseUrl.endsWith("/")) {
-      return new URL(
-          endpoint.startsWith("/") ? baseUrl + endpoint.substring(1) : baseUrl + endpoint);
+      return new URL(endpoint.startsWith("/") ? baseUrl + endpoint.substring(1) : baseUrl + endpoint);
     } else {
-      return new URL(baseUrl + (endpoint.startsWith("/") ?
-          baseUrl + endpoint :
-          baseUrl + '/' + endpoint));
+      return new URL(baseUrl + (endpoint.startsWith("/") ? endpoint : '/' + endpoint));
     }
   }
 
