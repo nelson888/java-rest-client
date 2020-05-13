@@ -12,6 +12,9 @@ import com.tambapps.http.restclient.request.body.BodyProcessor;
  * Class that holds REST request data
  */
 public class RestRequest {
+  private static final String CONTENT_TYPE_HEADER = "Content-Type";
+  private static final String ACCEPT_HEADER = "Accept";
+  private static final String JSON_TYPE = "application/json";
 
   private final String endpoint;
   private final Map<String, String> headers;
@@ -170,10 +173,38 @@ public class RestRequest {
      * Sets a header for this request
      * @param name the name of the header
      * @param value the value of the header
-     * @return
+     * @return this
      */
     public Builder header(String name, String value) {
       headers.put(name, value);
+      return this;
+    }
+
+    /**
+     * Sets the 'Content-Type' header to json
+     * @return this
+     */
+    public Builder jsonBody() {
+      headers.put(CONTENT_TYPE_HEADER, JSON_TYPE);
+      return this;
+    }
+
+    /**
+     * Sets the 'Accept' header to json
+     * @return this
+     */
+    public Builder acceptJson() {
+      headers.put(ACCEPT_HEADER, JSON_TYPE);
+      return this;
+    }
+
+    /**
+     * Sets the 'Accept' and 'Content-Type' header to json
+     * @return this
+     */
+    public Builder json() {
+      jsonBody();
+      acceptJson();
       return this;
     }
 

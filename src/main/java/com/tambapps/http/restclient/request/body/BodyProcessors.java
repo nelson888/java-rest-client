@@ -3,7 +3,6 @@ package com.tambapps.http.restclient.request.body;
 import com.tambapps.http.restclient.util.BytesContainer;
 import com.tambapps.http.restclient.util.IOUtils;
 import com.tambapps.http.restclient.util.ISSupplier;
-import com.tambapps.http.restclient.util.ObjectConverter;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -26,14 +25,6 @@ public final class BodyProcessors {
 
   public static BodyProcessor string(String content) {
     return new StringBodyProcessor(content);
-  }
-
-  public static BodyProcessor json(String content) {
-    return new JsonBodyProcessor(content);
-  }
-
-  public static BodyProcessor json(ObjectConverter converter, Object object) {
-    return new JsonBodyProcessor(converter.stringify(object));
   }
 
   public static BodyProcessor multipartFile(File file, String key, int bufferSize) {
@@ -104,20 +95,6 @@ public final class BodyProcessors {
         wr.flush();
       }
     }
-  }
-
-  private static class JsonBodyProcessor extends StringBodyProcessor {
-
-    private JsonBodyProcessor(String content) {
-      super(content);
-    }
-
-    @Override
-    public void prepareURLConnection(URLConnection connection) {
-      connection.setRequestProperty("Accept", JSON_TYPE);
-      connection.setRequestProperty(CONTENT_TYPE, JSON_TYPE);
-    }
-
   }
 
   private abstract static class MultipartBodyProcessor extends AbstractBodyProcessor {
