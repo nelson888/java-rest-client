@@ -18,7 +18,7 @@ public abstract class AbstractBodyProcessor implements BodyProcessor {
     }
   }
 
-  abstract void writeContent(OutputStream oStream) throws IOException;
+  protected abstract void writeContent(OutputStream oStream) throws IOException;
 
   protected void prepareURLConnection(URLConnection connection) {}
 }

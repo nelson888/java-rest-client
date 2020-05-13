@@ -136,7 +136,7 @@ public final class BodyProcessors {
     }
 
     @Override
-    void writeContent(OutputStream oStream) throws IOException {
+    protected void writeContent(OutputStream oStream) throws IOException {
       try (DataOutputStream request = new DataOutputStream(
           oStream)) {
         request.writeBytes(twoHyphens + boundary + crlf);
@@ -237,7 +237,7 @@ public final class BodyProcessors {
     }
 
     @Override
-    void writeContent(OutputStream os) throws IOException {
+    protected void writeContent(OutputStream os) throws IOException {
       os.write(bytes, 0, bytes.length);
     }
   }
@@ -251,7 +251,7 @@ public final class BodyProcessors {
     }
 
     @Override
-    void writeContent(OutputStream os) throws IOException {
+    protected void writeContent(OutputStream os) throws IOException {
       try (InputStream is = new FileInputStream(file)) {
         IOUtils.copy(is, os);
       }
@@ -267,7 +267,7 @@ public final class BodyProcessors {
     }
 
     @Override
-    void writeContent(OutputStream os) throws IOException {
+    protected void writeContent(OutputStream os) throws IOException {
       try (InputStream is = supplier.get()) {
         IOUtils.copy(is, os);
       }
