@@ -104,7 +104,7 @@ public class RestRequest {
     private BodyProcessor bodyProcessor;
 
     private Builder(String endpoint) {
-      this.endpoint = endpoint;
+      this.endpoint = endpoint == null ? "" : endpoint;
     }
 
     /**
