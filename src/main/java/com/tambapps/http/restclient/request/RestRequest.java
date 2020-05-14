@@ -160,6 +160,14 @@ public class RestRequest {
     }
 
     /**
+     * Sets the method of the request to 'PATCH'
+     * @return this
+     */
+    public Builder PATCH() {
+      return method(PATCH);
+    }
+
+    /**
      * Sets the body processor of this request
      * @param bodyProcessor the body processor
      * @return this
