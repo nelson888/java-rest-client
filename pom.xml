@@ -5,7 +5,7 @@
 
 	<groupId>com.tambapps.http</groupId>
 	<artifactId>restclient</artifactId>
-	<version>3.1</version>
+	<version>3.3</version>
 	<name>Java Rest Client</name>
 
     <dependencies>
