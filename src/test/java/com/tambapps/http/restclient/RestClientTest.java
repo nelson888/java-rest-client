@@ -30,9 +30,10 @@ public class RestClientTest extends AbstractRestClientTest {
     int id = 8;
     final Post post = new Post(id, 43, "title", "body");
     RestRequest request = RestRequest.builder("posts/" + id)
-        .PUT()
-        .body(BodyProcessors.json(GSON.toJson(post)))
-        .build();
+      .PUT()
+      .json()
+      .body(BodyProcessors.string(GSON.toJson(post)))
+      .build();
 
     RestResponse<Post> response = client.execute(request, RESPONSE_HANDLER);
     putAsserts(response, post);
@@ -41,9 +42,10 @@ public class RestClientTest extends AbstractRestClientTest {
   public void postTest() {
     final Post post = new Post(0, 43, "title", "body");
     RestRequest request = RestRequest.builder("posts/")
-        .POST()
-        .body(BodyProcessors.json(GSON.toJson(post)))
-        .build();
+      .POST()
+      .json()
+      .body(BodyProcessors.string(GSON.toJson(post)))
+      .build();
 
     RestResponse<Post> response = client.execute(request, RESPONSE_HANDLER);
     postAsserts(response, post);

@@ -44,9 +44,9 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
     int id = 8;
     final Post post = new Post(id, 43, "title", "body");
     RestRequest request = RestRequest.builder("posts/" + id)
-        .PUT()
-        .body(BodyProcessors.json(GSON.toJson(post)))
-        .build();
+      .PUT()
+      .body(BodyProcessors.string(GSON.toJson(post)))
+      .build();
 
     client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post>() {
       @Override
@@ -62,9 +62,10 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
   public void postTest() throws InterruptedException {
     final Post post = new Post(0, 43, "title", "body");
     RestRequest request = RestRequest.builder("posts/")
-        .POST()
-        .body(BodyProcessors.json(GSON.toJson(post)))
-        .build();
+      .POST()
+      .json()
+      .body(BodyProcessors.string(GSON.toJson(post)))
+      .build();
 
     client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post>() {
       @Override
