@@ -51,15 +51,15 @@ public final class ResponseHandlers {
 
   private ResponseHandlers() {}
 
-  public static ResponseHandler<String> stringHandler() {
+  public static ResponseHandler<String> string() {
     return STRING_HANDLER;
   }
 
-  public static ResponseHandler<Integer> intHandler() {
+  public static ResponseHandler<Integer> integer() {
     return INT_HANDLER;
   }
 
-  public static <T extends Enum<T>> ResponseHandler<T> enumHandler(final Class<T> clazz) {
+  public static <T extends Enum<T>> ResponseHandler<T> enumeration(final Class<T> clazz) {
     return new ResponseHandler<T>() {
       @Override
       public T convert(InputStream inputStream) throws IOException {
@@ -74,7 +74,7 @@ public final class ResponseHandlers {
    * Response handler returning raw response into a byte array
    * @return response handler converting to byte array
    */
-  public static ResponseHandler<BytesContainer> bytesHandler() {
+  public static ResponseHandler<BytesContainer> bytes() {
     return BYTES_HANDLER;
   }
 
@@ -82,8 +82,8 @@ public final class ResponseHandlers {
    * Response handler returning multipart response into a byte array
    * @return response handler converting multipart response to byte array
    */
-  public static ResponseHandler<BytesContainer> multipartBytesHandler() {
-    return bytesHandler();
+  public static ResponseHandler<BytesContainer> multipartBytes() {
+    return bytes();
   }
 
   /**
@@ -91,8 +91,8 @@ public final class ResponseHandlers {
    * @param file the file to write the response content to
    * @return response handler writing in given file
    */
-  public static ResponseHandler<File> multipartFileHandler(File file) {
-    return multipartFileHandler(file, IOUtils.DEFAULT_BUFFER_SIZE);
+  public static ResponseHandler<File> multipartFile(File file) {
+    return multipartFile(file, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
   /**
@@ -101,8 +101,8 @@ public final class ResponseHandlers {
    * @param bufferSize the buffer size
    * @return response handler writing in given file
    */
-  public static ResponseHandler<File> multipartFileHandler(final File file,
-                                                           final int bufferSize) {
+  public static ResponseHandler<File> multipartFile(final File file,
+                                                    final int bufferSize) {
     return new ResponseHandler<File>() {
       @Override
       public File convert(InputStream inputStream) throws IOException {
@@ -122,8 +122,8 @@ public final class ResponseHandlers {
    * @param filePath the path of the file to write the response content to
    * @return response handler writing in given file
    */
-  public static ResponseHandler<File> multipartFileHandler(String filePath) {
-    return multipartFileHandler(filePath, IOUtils.DEFAULT_BUFFER_SIZE);
+  public static ResponseHandler<File> multipartFile(String filePath) {
+    return multipartFile(filePath, IOUtils.DEFAULT_BUFFER_SIZE);
   }
 
   /**
@@ -132,8 +132,8 @@ public final class ResponseHandlers {
    * @param bufferSize the buffer size
    * @return response handler writing in given file
    */
-  public static ResponseHandler<File> multipartFileHandler(final String filePath,
-                                                           final int bufferSize) {
+  public static ResponseHandler<File> multipartFile(final String filePath,
+                                                    final int bufferSize) {
     return new ResponseHandler<File>() {
       @Override
       public File convert(InputStream inputStream) throws IOException {
@@ -156,8 +156,8 @@ public final class ResponseHandlers {
    * @param <T> the type of the object
    * @return handler converting the response into an object
    */
-  public static <T> ResponseHandler<T> objectHandler(final Class<T> tClass,
-                                                     final ObjectParser parser) {
+  public static <T> ResponseHandler<T> object(final Class<T> tClass,
+                                              final ObjectParser parser) {
     return new ResponseHandler<T>() {
       @Override
       public T convert(InputStream inputStream) throws IOException {
@@ -173,8 +173,8 @@ public final class ResponseHandlers {
    * @param <T> the type of the object
    * @return handler converting the response into a list of objects
    */
-  public static <T> ResponseHandler<List<T>> objectListHandler(final Class<T> tClass,
-      final ObjectListParser parser) {
+  public static <T> ResponseHandler<List<T>> objectList(final Class<T> tClass,
+                                                        final ObjectListParser parser) {
     return new ResponseHandler<List<T>>() {
       @Override
       public List<T> convert(InputStream inputStream) throws IOException {

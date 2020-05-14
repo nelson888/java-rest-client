@@ -27,7 +27,7 @@ public abstract class AbstractRestClientTest {
     }
   };
   static final ResponseHandler<Post> RESPONSE_HANDLER =
-    ResponseHandlers.objectHandler(Post.class, JSON_PARSER);
+    ResponseHandlers.object(Post.class, JSON_PARSER);
 
   private static final Type POST_LIST_TYPE = new TypeToken<List<Post>>(){}.getType();
   private static final ObjectListParser JSON_LIST_PARSER = new ObjectListParser() {
@@ -37,7 +37,7 @@ public abstract class AbstractRestClientTest {
     }
   };
   static final ResponseHandler<List<Post>> LIST_RESPONSE_HANDLER =
-    ResponseHandlers.objectListHandler(Post.class, JSON_LIST_PARSER);
+    ResponseHandlers.objectList(Post.class, JSON_LIST_PARSER);
 
   void getAsserts(RestResponse<Post> response) {
     assertTrue("Should be successful", response.isSuccessful());
