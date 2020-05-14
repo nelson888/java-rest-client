@@ -13,13 +13,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URLConnection;
 
+import static com.tambapps.http.restclient.response.HttpHeaders.CONTENT_TYPE_HEADER;
+
 /**
  * Util class implementing different {@link BodyProcessor}
  */
 public final class BodyProcessors {
-
-  private static final String CONTENT_TYPE = "Content-Type";
-  private static final String JSON_TYPE = "application/json";
 
   private BodyProcessors() { }
 
@@ -137,7 +136,7 @@ public final class BodyProcessors {
       connection.setRequestProperty("Connection", "Keep-Alive");
       connection.setRequestProperty("Cache-Control", "no-cache");
       connection.setRequestProperty(
-          CONTENT_TYPE, "multipart/form-data;boundary=" + this.boundary);
+          CONTENT_TYPE_HEADER, "multipart/form-data;boundary=" + this.boundary);
     }
 
   }

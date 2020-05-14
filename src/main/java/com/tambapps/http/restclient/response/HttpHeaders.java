@@ -9,6 +9,11 @@ import java.util.Map;
  */
 public class HttpHeaders {
 
+  public static final String ACCEPT_HEADER = "Accept";
+  public static final String CONTENT_TYPE_HEADER = "Content-Type";
+  public static final String JSON_TYPE = "application/json";
+
+
   private final Map<String, List<String>> map;
 
   public HttpHeaders(Map<String, List<String>> map) {

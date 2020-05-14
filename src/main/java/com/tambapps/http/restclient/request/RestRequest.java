@@ -1,6 +1,9 @@
 package com.tambapps.http.restclient.request;
 
 import static com.tambapps.http.restclient.request.HttpMethods.*;
+import static com.tambapps.http.restclient.response.HttpHeaders.ACCEPT_HEADER;
+import static com.tambapps.http.restclient.response.HttpHeaders.CONTENT_TYPE_HEADER;
+import static com.tambapps.http.restclient.response.HttpHeaders.JSON_TYPE;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,9 +15,6 @@ import com.tambapps.http.restclient.request.body.BodyProcessor;
  * Class that holds REST request data
  */
 public class RestRequest {
-  private static final String CONTENT_TYPE_HEADER = "Content-Type";
-  private static final String ACCEPT_HEADER = "Accept";
-  private static final String JSON_TYPE = "application/json";
 
   private final String endpoint;
   private final Map<String, String> headers;
