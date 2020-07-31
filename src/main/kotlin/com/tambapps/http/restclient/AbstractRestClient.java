@@ -44,16 +44,16 @@ public class AbstractRestClient {
 
   private HttpURLConnection prepareConnection(RestRequest request) throws IOException {
     HttpURLConnection connection =
-        (HttpURLConnection) getUrl(request.getEndpoint()).openConnection();
-    connection.setRequestMethod(request.getMethod());
-    for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
+        (HttpURLConnection) getUrl(request.endpoint).openConnection();
+    connection.setRequestMethod(request.method);
+    for (Map.Entry<String, String> header : request.headers.entrySet()) {
       connection.setRequestProperty(header.getKey(), header.getValue());
     }
     if (jwt != null) {
       connection.setRequestProperty("Authorization", "Bearer " + jwt);
     }
-    if (request.getTimeout() != null) {
-      connection.setConnectTimeout(request.getTimeout());
+    if (request.timeout != null) {
+      connection.setConnectTimeout(request.timeout);
     }
     return connection;
   }

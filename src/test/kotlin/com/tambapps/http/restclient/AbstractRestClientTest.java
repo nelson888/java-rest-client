@@ -43,7 +43,7 @@ public abstract class AbstractRestClientTest {
     assertTrue("Should be successful", response.isSuccessful());
     assertFalse("Shouldn't be an error code", response.isErrorResponse());
 
-    assertPost(response.getData());
+    assertPost(response.data);
   }
 
   private void assertPost(Post post) {
@@ -57,14 +57,14 @@ public abstract class AbstractRestClientTest {
     assertTrue("Should be successful", response.isSuccessful());
     assertFalse("Shouldn't be an error code", response.isErrorResponse());
 
-    for (Post post : response.getData()) {
+    for (Post post : response.data) {
       assertPost(post);
     }
   }
 
   void getListAssertsWithUserId(RestResponse<List<Post>> response, int userId) {
     getListAsserts(response);
-    for (Post post : response.getData()) {
+    for (Post post : response.data) {
       assertEquals("Should be equal", userId, (int) post.getUserId());
     }
   }
@@ -72,13 +72,13 @@ public abstract class AbstractRestClientTest {
   void putAsserts(RestResponse<Post> response, Post post) {
     assertFalse("Shouldn't be an error code", response.isErrorResponse());
     assertTrue("Should be successful", response.isSuccessful());
-    assertEquals("Should be equal", post, response.getData());
+    assertEquals("Should be equal", post, response.data);
   }
 
   void postAsserts(RestResponse<Post> response, Post post) {
     assertTrue("Should be successful", response.isSuccessful());
     assertFalse("Shouldn't be null", response.isErrorResponse());
-    Post responseData = response.getData();
+    Post responseData = response.data;
     assertEquals("Should be equal", post.getUserId(), responseData.getUserId());
     assertEquals("Should be equal", post.getTitle(), responseData.getTitle());
     assertEquals("Should be equal", post.getBody(), responseData.getBody());
