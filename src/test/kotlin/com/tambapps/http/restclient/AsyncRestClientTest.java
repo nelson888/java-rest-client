@@ -26,7 +26,7 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
   @Test
   public void getTest() throws InterruptedException {
     RestRequest request = RestRequest.builder("posts/1")
-        .GET()
+        .get()
         .build();
     client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post>() {
       @Override
@@ -44,7 +44,7 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
     int id = 8;
     final Post post = new Post(id, 43, "title", "body");
     RestRequest request = RestRequest.builder("posts/" + id)
-      .PUT()
+      .put()
       .body(BodyProcessors.string(GSON.toJson(post)))
       .build();
 
@@ -62,7 +62,7 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
   public void postTest() throws InterruptedException {
     final Post post = new Post(0, 43, "title", "body");
     RestRequest request = RestRequest.builder("posts/")
-      .POST()
+      .post()
       .json()
       .body(BodyProcessors.string(GSON.toJson(post)))
       .build();
@@ -81,7 +81,7 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
   @Test
   public void deleteTest() throws InterruptedException {
     RestRequest request = RestRequest.builder("posts/1")
-        .DELETE()
+        .delete()
         .build();
     client.execute(request, RESPONSE_HANDLER, new AsyncRestClient.Callback<Post>() {
       @Override
@@ -96,7 +96,7 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
   @Test
   public void getListTest() throws InterruptedException {
     RestRequest request = RestRequest.builder("/posts")
-      .GET()
+      .get()
       .build();
     client.execute(request, LIST_RESPONSE_HANDLER, new AsyncRestClient.Callback<List<Post>>() {
       @Override
@@ -114,7 +114,7 @@ public class AsyncRestClientTest extends AbstractRestClientTest {
     final int userId = 1;
     RestRequest request = RestRequest.builder("/posts")
       .parameter("userId", userId)
-      .GET()
+      .get()
       .build();
     client.execute(request, LIST_RESPONSE_HANDLER, new AsyncRestClient.Callback<List<Post>>() {
       @Override

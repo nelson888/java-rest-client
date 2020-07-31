@@ -7,39 +7,23 @@ import java.util.*
 /**
  * Class that holds REST request data
  */
-class RestRequest private constructor(endpoint: String?, headers: Map<String, String>, method: String?, timeout: Int?,
-                                      bodyProcessor: BodyProcessor?) {
-    /**
-     * Returns the endpoint
-     * @return the endpoint
-     */
-    val endpoint: String
+class RestRequest private constructor(
+        val endpoint: String, headers: Map<String, String>,
+        val method: String, val timeout: Int?,
+        val bodyProcessor: BodyProcessor?) {
 
     /**
      * Returns the headers
      * @return the headers
      */
-    val headers: Map<String, String>
-
-    /**
-     * Returns the method
-     * @return the method
-     */
-    val method: String
-
-    /**
-     * Returns the timeout
-     * @return the timeout
-     */
-    val timeout: Int?
-    val outputProcessor: BodyProcessor?
+    val headers: Map<String, String> = Collections.unmodifiableMap(headers)
 
     /**
      * Returns whether the output of the request will be handled or not
      * @return whether the output of the request will be handled or not
      */
-    fun hasOutput(): Boolean {
-        return outputProcessor != null
+    fun hasBody(): Boolean {
+        return bodyProcessor != null
     }
 
     /**
@@ -48,7 +32,7 @@ class RestRequest private constructor(endpoint: String?, headers: Map<String, St
     class Builder(endpoint: String?) {
         private val headers: MutableMap<String, String> = HashMap()
         private val parameters: MutableMap<String, Any> = HashMap()
-        private val endpoint: String
+        private val endpoint: String = endpoint ?: ""
         private var method: String = HttpMethods.GET
         private var timeout: Int? = null
         private var bodyProcessor: BodyProcessor? = null
@@ -74,51 +58,11 @@ class RestRequest private constructor(endpoint: String?, headers: Map<String, St
         }
 
         /**
-         * Sets the method of the request to 'GET'
-         * @return this
-         */
-        fun GET(): Builder {
-            return method(HttpMethods.GET)
-        }
-
-        /**
-         * Sets the method of the request to 'DELETE'
-         * @return this
-         */
-        fun DELETE(): Builder {
-            return method(HttpMethods.DELETE)
-        }
-
-        /**
-         * Sets the method of the request to 'PUT'
-         * @return this
-         */
-        fun PUT(): Builder {
-            return method(HttpMethods.PUT)
-        }
-
-        /**
-         * Sets the method of the request to 'POST'
-         * @return this
-         */
-        fun POST(): Builder {
-            return method(HttpMethods.POST)
-        }
-
-        /**
-         * Sets the method of the request to 'PATCH'
-         * @return this
-         */
-        fun PATCH(): Builder {
-            return method(HttpMethods.PATCH)
-        }
-
-        /**
          * Sets the body processor of this request
          * @param bodyProcessor the body processor
          * @return this
          */
-        fun body(bodyProcessor: BodyProcessor?): Builder {
+        fun body(bodyProcessor: BodyProcessor): Builder {
             this.bodyProcessor = bodyProcessor
             return this
         }
@@ -167,8 +111,8 @@ class RestRequest private constructor(endpoint: String?, headers: Map<String, St
          * @param headers the headers
          * @return this
          */
-        fun headers(headers: Map<String, String>?): Builder {
-            this.headers.putAll(headers!!)
+        fun headers(headers: Map<String, String>): Builder {
+            this.headers.putAll(headers)
             return this
         }
 
@@ -199,8 +143,8 @@ class RestRequest private constructor(endpoint: String?, headers: Map<String, St
          * @param parameters the url parameters an their values
          * @return this
          */
-        fun parameters(parameters: Map<String, Any>?): Builder {
-            this.parameters.putAll(parameters!!)
+        fun parameters(parameters: Map<String, Any>): Builder {
+            this.parameters.putAll(parameters)
             return this
         }
 
@@ -225,9 +169,6 @@ class RestRequest private constructor(endpoint: String?, headers: Map<String, St
             return builder.toString()
         }
 
-        init {
-            this.endpoint = endpoint ?: ""
-        }
     }
 
     companion object {
@@ -237,18 +178,72 @@ class RestRequest private constructor(endpoint: String?, headers: Map<String, St
          * @return the request builde
          */
         @JvmStatic
-        fun builder(endpoint: String?): Builder {
+        fun builder(endpoint: String): Builder {
             return Builder(endpoint)
+        }
+
+        /**
+         * Sets the method of the request to 'GET'
+         * @return this
+         */
+        @JvmStatic
+        fun get(endpoint: String): Builder {
+            return builder(endpoint).method(HttpMethods.GET)
+        }
+
+        /**
+         * Sets the method of the request to 'DELETE'
+         * @return this
+         */
+        @JvmStatic
+        fun delete(endpoint: String): Builder {
+            return builder(endpoint).method(HttpMethods.DELETE)
+        }
+
+        /**
+         * Sets the method of the request to 'PUT'
+         * @return this
+         */
+        @JvmStatic
+        fun put(endpoint: String): Builder {
+            return builder(endpoint).method(HttpMethods.PUT)
+        }
+
+        /**
+         * Sets the method of the request to 'POST'
+         * @return this
+         */
+        @JvmStatic
+        fun post(endpoint: String): Builder {
+            return builder(endpoint).method(HttpMethods.POST)
+        }
+
+        /**
+         * Sets the method of the request to 'POST' and sets the body of the request
+         * @return this
+         */
+        @JvmStatic
+        fun post(endpoint: String, bodyProcessor: BodyProcessor): Builder {
+            return builder(endpoint).method(HttpMethods.POST).body(bodyProcessor)
+        }
+
+        /**
+         * Sets the method of the request to 'PATCH'
+         * @return this
+         */
+        @JvmStatic
+        fun patch(endpoint: String): Builder {
+            return builder(endpoint).method(HttpMethods.PATCH)
+        }
+
+        /**
+         * Sets the method of the request to 'PATCH' and sets the body of the request
+         * @return this
+         */
+        @JvmStatic
+        fun patch(endpoint: String, bodyProcessor: BodyProcessor): Builder {
+            return builder(endpoint).method(HttpMethods.PATCH).body(bodyProcessor)
         }
     }
 
-    init {
-        requireNotNull(endpoint) { "URL cannot be null" }
-        requireNotNull(method) { "method cannot be null" }
-        this.endpoint = endpoint
-        this.headers = Collections.unmodifiableMap(headers)
-        this.method = method
-        this.timeout = timeout
-        outputProcessor = bodyProcessor
-    }
 }
