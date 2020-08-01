@@ -1,7 +1,5 @@
 package com.tambapps.http.client.response
 
-import java.util.*
-
 /**
  * Class representing headers of an Http response
  */
@@ -10,7 +8,7 @@ class HttpHeaders(map: Map<String, List<String>>) {
      * Get all the headers and there value in form of a map
      * @return the map representing the headers
      */
-    private val map: Map<String, List<String>> = Collections.unmodifiableMap(map)
+    private val map: Map<String, List<String>> = map.toMap()
 
     /**
      * Get the first value associated with the given header name
