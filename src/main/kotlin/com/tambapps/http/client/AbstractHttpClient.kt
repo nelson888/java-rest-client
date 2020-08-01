@@ -59,7 +59,7 @@ abstract class AbstractHttpClient {
                 request.bodyProcessor!!.prepareConnection(connection)
             }
         } catch (e: IOException) {
-            return ErrorResponse(e.message!!.toByteArray())
+            return ErrorResponse("Error while preparing connection: ${e.message}".toByteArray())
         }
         val responseHeaders: MutableMap<String, List<String>> = HashMap()
         var responseCode = Response.REQUEST_NOT_SENT
