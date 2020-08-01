@@ -122,60 +122,6 @@ object ResponseHandlers {
     }
 
     /**
-     * handler converting response into an object
-     * @param tClass the class o the object
-     * @param parser the parser
-     * @param <T> the type of the object
-     * @return handler converting the response into an object
-    </T> */
-    @JvmStatic
-    fun <T> `object`(tClass: Class<T>?,
-                     parser: ObjectParser): ResponseHandler<T> {
-        return object : ResponseHandler<T> {
-            @Throws(IOException::class)
-            override fun convert(inputStream: InputStream): T {
-                return parser.parse(tClass, STRING_HANDLER.convert(inputStream))
-            }
-        }
-    }
-
-    /**
-     * handler converting response into a list of objects
-     * @param tClass the class of the objects
-     * @param parser the parser
-     * @param <T> the type of the object
-     * @return handler converting the response into a list of objects
-    </T> */
-    @JvmStatic
-    fun <T> objectList(tClass: Class<T>?,
-                       parser: ObjectListParser): ResponseHandler<List<T>> {
-        return object : ResponseHandler<List<T>> {
-            @Throws(IOException::class)
-            override fun convert(inputStream: InputStream): List<T> {
-                return parser.parse(tClass, STRING_HANDLER.convert(inputStream))
-            }
-        }
-    }
-
-    /**
-     * handler converting response into a set of objects
-     * @param tClass the class of the objects
-     * @param parser the parser
-     * @param <T> the type of the object
-     * @return handler converting the response into a set of objects
-    </T> */
-    @JvmStatic
-    fun <T> objectSetHandler(tClass: Class<T>?,
-                             parser: ObjectSetParser): ResponseHandler<Set<T>> {
-        return object : ResponseHandler<Set<T>> {
-            @Throws(IOException::class)
-            override fun convert(inputStream: InputStream): Set<T> {
-                return parser.parse(tClass, STRING_HANDLER.convert(inputStream))
-            }
-        }
-    }
-
-    /**
      * handler for ignoring the response
      * @return a handler ignoring the response
      */

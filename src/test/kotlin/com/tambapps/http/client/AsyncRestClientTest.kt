@@ -76,30 +76,4 @@ class AsyncRestClientTest : AbstractRestClientTest() {
         }
         Assert.assertTrue("Should be true", latch.await(TIMEOUT.toLong(), TimeUnit.SECONDS))
     }
-
-    @Throws(InterruptedException::class)
-    @Test
-    fun listTest() {
-        val request: RestRequest = get("/posts")
-                .build()
-        client.execute(request, LIST_RESPONSE_HANDLER) { response ->
-            getListAsserts(response)
-            latch.countDown()
-        }
-        Assert.assertTrue("Should be true", latch.await(TIMEOUT.toLong(), TimeUnit.SECONDS))
-    }
-
-    @Throws(InterruptedException::class)
-    @Test
-    fun listWithParameterTest() {
-        val userId = 1
-        val request: RestRequest = get("/posts")
-                .parameter("userId", userId)
-                .build()
-        client.execute(request, LIST_RESPONSE_HANDLER) { response ->
-            getListAssertsWithUserId(response, userId)
-            latch.countDown()
-        }
-        Assert.assertTrue("Should be true", latch.await(TIMEOUT.toLong(), TimeUnit.SECONDS))
-    }
 }

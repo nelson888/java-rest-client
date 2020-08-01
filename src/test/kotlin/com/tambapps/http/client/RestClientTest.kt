@@ -48,22 +48,4 @@ class RestClientTest : AbstractRestClientTest() {
                 .build(), RESPONSE_HANDLER)
         deleteAsserts(response)
     }
-
-    @Test
-    fun listTest() {
-        val request: RestRequest = get("/posts")
-                .build()
-        val response = client.execute(request, LIST_RESPONSE_HANDLER)
-        getListAsserts(response)
-    }
-
-    @Test
-    fun listWithParameterTest() {
-        val userId = 2
-        val request: RestRequest = get("/posts")
-                .parameter("userId", userId)
-                .build()
-        val response = client.execute(request, LIST_RESPONSE_HANDLER)
-        getListAssertsWithUserId(response, userId)
-    }
 }

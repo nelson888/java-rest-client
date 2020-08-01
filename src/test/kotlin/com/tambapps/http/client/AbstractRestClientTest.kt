@@ -1,14 +1,12 @@
 package com.tambapps.http.client
 
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.tambapps.http.client.response.RestResponse
-import com.tambapps.http.client.response.handler.ResponseHandlers.`object`
-import com.tambapps.http.client.response.handler.ResponseHandlers.objectList
-import com.tambapps.http.client.util.ObjectListParser
-import com.tambapps.http.client.util.ObjectParser
+import com.tambapps.http.client.response.handler.ResponseHandler
 import junit.framework.Assert.assertEquals
 import org.junit.Assert
+import java.io.InputStream
+import java.io.InputStreamReader
 import java.util.*
 
 abstract class AbstractRestClientTest {
@@ -97,20 +95,11 @@ abstract class AbstractRestClientTest {
         const val TIMEOUT = 8
         @JvmField
         val GSON = Gson()
-        private val JSON_PARSER: ObjectParser = object : ObjectParser {
-            override fun <T> parse(clazz: Class<T>, data: String): T {
-                return GSON.fromJson(data, clazz)
+        @JvmField
+        val RESPONSE_HANDLER = object : ResponseHandler<Post> {
+            override fun convert(inputStream: InputStream): Post {
+                return GSON.fromJson(InputStreamReader(inputStream), Post::class.java)
             }
         }
-        @JvmField
-        val RESPONSE_HANDLER = `object`(Post::class.java, JSON_PARSER)
-        private val POST_LIST_TYPE = object : TypeToken<List<Post?>?>() {}.type
-        private val JSON_LIST_PARSER: ObjectListParser = object : ObjectListParser {
-            override fun <T> parse(clazz: Class<T>, data: String): List<T> {
-                return GSON.fromJson(data, POST_LIST_TYPE)
-            }
-        }
-        @JvmField
-        val LIST_RESPONSE_HANDLER = objectList(Post::class.java, JSON_LIST_PARSER)
     }
 }
