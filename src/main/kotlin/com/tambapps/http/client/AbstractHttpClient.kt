@@ -1,5 +1,6 @@
 package com.tambapps.http.client
 
+import com.tambapps.http.client.auth.Authentication
 import com.tambapps.http.client.request.Request
 import com.tambapps.http.client.response.ErrorResponse
 import com.tambapps.http.client.response.HttpHeaders
@@ -13,10 +14,9 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-abstract class AbstractHttpClient() {
+abstract class AbstractHttpClient {
 
-    var jwt: String? = null
-
+    var authentication: Authentication? = null
 
     /**
      * Execute an http request
@@ -37,10 +37,6 @@ abstract class AbstractHttpClient() {
         return doExecute(request, responseHandler)
     }
 
-    fun removeJwt() {
-        this.jwt = null
-    }
-
     @Throws(IOException::class)
     private fun prepareConnection(request: Request): HttpURLConnection {
         val connection = getUrl(request.endpoint).openConnection() as HttpURLConnection
@@ -48,9 +44,7 @@ abstract class AbstractHttpClient() {
         for ((key, value) in request.headers) {
             connection.setRequestProperty(key, value)
         }
-        if (jwt != null) {
-            connection.setRequestProperty("Authorization", "Bearer $jwt")
-        }
+        authentication?.authenticate(connection)
         if (request.timeout != null) {
             connection.connectTimeout = request.timeout
         }
