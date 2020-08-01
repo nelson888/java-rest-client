@@ -15,15 +15,14 @@ class HttpHeaders(map: Map<String, List<String>>) {
      * @param name the name of the header
      * @return the first value associated with the given header name
      */
-    operator fun get(name: String): String? {
+    operator fun get(name: String?): String? {
         val values = map[name]
         return values?.get(0)
     }
 
     // for Groovy
-    fun getAt(name: String): String? {
-        val values = map[name]
-        return values?.get(0)
+    fun getAt(name: String?): String? {
+        return get(name)
     }
 
     /**
@@ -31,7 +30,7 @@ class HttpHeaders(map: Map<String, List<String>>) {
      * @param name the  name of the header
      * @return if the header has a value
      */
-    fun hasValue(name: String): Boolean {
+    fun hasValue(name: String?): Boolean {
         val values = map[name]
         return values != null && values.isNotEmpty()
     }
@@ -41,8 +40,8 @@ class HttpHeaders(map: Map<String, List<String>>) {
      * @param name the name of the header
      * @return all the values associated with the given header name
      */
-    fun getAllValues(name: String?): List<String>? {
-        return map[name]
+    fun getAllValues(name: String?): List<String> {
+        return map[name] ?: emptyList()
     }
 
     override fun toString(): String {

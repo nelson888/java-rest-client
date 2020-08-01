@@ -1,7 +1,6 @@
 package com.tambapps.http.client.request.body
 
 import com.tambapps.http.client.response.HttpHeaders
-import com.tambapps.http.client.util.BytesContainer
 import com.tambapps.http.client.util.IOUtils
 import com.tambapps.http.client.util.ISSupplier
 import java.io.*
@@ -17,28 +16,23 @@ object BodyProcessors {
         return StringBodyProcessor(content)
     }
 
-    @JvmStatic
+    @JvmOverloads
     fun multipartFile(file: File, key: String = file.name, bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): BodyProcessor {
         return MultipartFileBodyProcessor(file, key, bufferSize)
     }
 
-    @JvmStatic
-    fun multipartBytes(bytesContainer: BytesContainer, name: String, key: String = name, bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): BodyProcessor {
-        return MultipartByteContainerBodyProcessor(bytesContainer, name, key, bufferSize)
+    @JvmOverloads
+    fun multipartBytes(bytes: ByteArray, name: String, key: String = name, bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): BodyProcessor {
+        return MultipartBytesBodyProcessor(bytes, name, key, bufferSize)
     }
 
-    @JvmStatic
-    fun multipartStream(isSupplier: ISSupplier, name: String, key: String): BodyProcessor {
-        return multipartStream(isSupplier, key, name, IOUtils.DEFAULT_BUFFER_SIZE)
-    }
-
-    @JvmStatic
-    fun multipartStream(isSupplier: ISSupplier, name: String, bufferSize: Int): BodyProcessor {
+    @JvmOverloads
+    fun multipartStream(isSupplier: ISSupplier, name: String, bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): BodyProcessor {
         return multipartStream(isSupplier, name, name, bufferSize)
     }
 
-    @JvmStatic
-    fun multipartStream(isSupplier: ISSupplier, name: String, key: String, bufferSize: Int): BodyProcessor {
+    @JvmOverloads
+    fun multipartStream(isSupplier: ISSupplier, name: String, key: String, bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): BodyProcessor {
         return MultipartInputStreamBodyProcessor(isSupplier, key, name, bufferSize)
     }
 
@@ -103,7 +97,7 @@ object BodyProcessors {
     private abstract class MultipartStreamBodyProcessor internal constructor(name: String, key: String, bufferSize: Int) : MultipartBodyProcessor(name, key, bufferSize) {
         @Throws(IOException::class)
         override fun writeMultipart(request: DataOutputStream, bufferSize: Int) {
-            inputStream.use { `is` -> IOUtils.copy(`is`, request, bufferSize) }
+            inputStream.use { iStream -> IOUtils.copy(iStream, request, bufferSize) }
         }
 
         @get:Throws(IOException::class)
@@ -122,14 +116,12 @@ object BodyProcessors {
             get() = isSupplier.get()
     }
 
-    private class MultipartByteContainerBodyProcessor internal constructor(private val bytesContainer: BytesContainer,
+    private class MultipartBytesBodyProcessor internal constructor(private val bytes: ByteArray,
                                                                            name: String, key: String, bufferSize: Int) : MultipartBodyProcessor(name, key, bufferSize) {
         @Throws(IOException::class)
         override fun writeMultipart(request: DataOutputStream, bufferSize: Int) {
-            val bytes = bytesContainer.bytes
             request.write(bytes)
         }
-
     }
 
     private class BytesBodyProcessor(private val bytes: ByteArray) : AbstractBodyProcessor() {
@@ -137,20 +129,19 @@ object BodyProcessors {
         override fun writeContent(oStream: OutputStream) {
             oStream.write(bytes, 0, bytes.size)
         }
-
     }
 
     private class FileBodyProcessor(private val file: File) : AbstractBodyProcessor() {
         @Throws(IOException::class)
         override fun writeContent(oStream: OutputStream) {
-            FileInputStream(file).use { `is` -> IOUtils.copy(`is`, oStream) }
+            FileInputStream(file).use { iStream -> IOUtils.copy(iStream, oStream) }
         }
     }
 
     private class InputStreamBodyProcessor(private val supplier: ISSupplier) : AbstractBodyProcessor() {
         @Throws(IOException::class)
         override fun writeContent(oStream: OutputStream) {
-            supplier.get().use { `is` -> IOUtils.copy(`is`, oStream) }
+            supplier.get().use { iStream -> IOUtils.copy(iStream, oStream) }
         }
     }
 }
