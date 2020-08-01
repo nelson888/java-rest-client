@@ -131,7 +131,7 @@ object ResponseHandlers {
     private class BytesHandler: ResponseHandler<ByteArray> {
         @Throws(IOException::class)
         override fun convert(inputStream: InputStream): ByteArray {
-            return inputStream.readAllBytes()
+            return IOUtils.toBytes(inputStream)
         }
     }
 
