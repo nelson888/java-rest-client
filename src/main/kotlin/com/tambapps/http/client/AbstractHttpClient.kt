@@ -66,8 +66,7 @@ abstract class AbstractHttpClient {
         try {
             responseCode = connection.responseCode
             responseHeaders.putAll(connection.headerFields)
-            val isErrorCode = IOUtils.isErrorCode(responseCode)
-            if (isErrorCode) {
+            if (IOUtils.isErrorCode(responseCode)) {
                 val stream = connection.errorStream
                 if (stream != null) {
                     return stream.use {

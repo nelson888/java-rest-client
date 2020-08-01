@@ -5,7 +5,7 @@ import com.tambapps.http.client.response.HttpHeaders
 import java.util.*
 
 /**
- * Class that holds REST request data
+ * Class that holds Http request data
  */
 class Request private constructor(
         public val endpoint: String, headers: Map<String, String>,
@@ -27,7 +27,7 @@ class Request private constructor(
     }
 
     /**
-     * Class allowing to build a REST request
+     * Class allowing to build an Http request
      */
     class Builder(endpoint: String?) {
         private val headers: MutableMap<String, String> = HashMap()
@@ -149,8 +149,8 @@ class Request private constructor(
         }
 
         /**
-         * Build the rest request
-         * @return the rest request
+         * Build the http request
+         * @return the http request
          */
         fun build(): Request {
             return Request(endpointWithParameters(), headers, method, timeout, bodyProcessor)

@@ -3,7 +3,7 @@ package com.tambapps.http.client.response
 import com.tambapps.http.client.response.handler.ResponseHandler
 
 /**
- * Class representing a response from a REST service
+ * Class representing an HTTP response
  * @param <T> the type of the response
 </T> */
 interface Response<T> {

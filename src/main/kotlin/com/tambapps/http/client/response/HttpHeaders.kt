@@ -3,7 +3,7 @@ package com.tambapps.http.client.response
 import java.util.*
 
 /**
- * Class representing headers of a REST response
+ * Class representing headers of an Http response
  */
 class HttpHeaders(map: Map<String, List<String>>) {
     /**

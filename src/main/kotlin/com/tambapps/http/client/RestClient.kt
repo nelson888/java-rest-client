@@ -1,14 +1,12 @@
 package com.tambapps.http.client
 
-import com.tambapps.http.client.request.Request
-import com.tambapps.http.client.response.Response
-import com.tambapps.http.client.response.handler.ResponseHandler
-import com.tambapps.http.client.response.handler.ResponseHandlers.noResponse
 import java.net.MalformedURLException
 import java.net.URL
 
 /**
- * Class that sends synchronous REST requests
+ * Class that sends synchronous Http requests to a rest service
+ * every request will be prefixed by the base url, meaning that
+ * Request only contain the endpoint of the REST service
  */
 class RestClient
 /**
