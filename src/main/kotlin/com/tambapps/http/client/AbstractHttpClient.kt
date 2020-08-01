@@ -6,6 +6,7 @@ import com.tambapps.http.client.response.HttpHeaders
 import com.tambapps.http.client.response.Response
 import com.tambapps.http.client.response.SuccessResponse
 import com.tambapps.http.client.response.handler.ResponseHandler
+import com.tambapps.http.client.response.handler.ResponseHandlers
 import com.tambapps.http.client.util.IOUtils
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -15,6 +16,26 @@ import java.net.URL
 abstract class AbstractHttpClient() {
 
     var jwt: String? = null
+
+
+    /**
+     * Execute an http request
+     * @param request the request to execute
+     * @return the response of the server
+     */
+    fun execute(request: Request): Response<Unit> {
+        return execute(request, ResponseHandlers.noResponse())
+    }
+
+    /**
+     * Execute an http request
+     * @param request the request to execute
+     * @param responseHandler the response handler
+     * @return the response of the server
+     */
+    fun <T> execute(request: Request, responseHandler: ResponseHandler<T>): Response<T> {
+        return doExecute(request, responseHandler)
+    }
 
     fun removeJwt() {
         this.jwt = null

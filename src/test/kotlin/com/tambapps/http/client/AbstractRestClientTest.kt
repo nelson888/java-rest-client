@@ -91,8 +91,7 @@ abstract class AbstractRestClientTest {
     }
 
     companion object {
-        const val API_URL = "https://jsonplaceholder.typicode.com/"
-        const val TIMEOUT = 8
+        const val API_URL = "https://jsonplaceholder.typicode.com"
         @JvmField
         val GSON = Gson()
         @JvmField
