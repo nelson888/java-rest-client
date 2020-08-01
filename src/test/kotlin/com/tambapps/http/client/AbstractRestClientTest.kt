@@ -39,7 +39,7 @@ abstract class AbstractRestClientTest {
         }
     }
 
-    fun putAsserts(response: Response<Post?>, post: Post?) {
+    fun putAsserts(response: Response<Post>, post: Post) {
         Assert.assertFalse("Shouldn't be an error code", response.isErrorResponse)
         Assert.assertTrue("Should be successful", response.isSuccessful)
         assertEquals("Should be equal", post, response.data)
@@ -54,7 +54,7 @@ abstract class AbstractRestClientTest {
         Assert.assertEquals("Should be equal", post.body, responseData.body)
     }
 
-    fun deleteAsserts(response: Response<Post?>) {
+    fun deleteAsserts(response: Response<Post>) {
         Assert.assertTrue("Should be successful", response.isSuccessful)
         Assert.assertFalse("Shouldn't be an error code", response.isErrorResponse)
     }

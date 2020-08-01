@@ -12,21 +12,12 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-abstract class AbstractRestClient(baseUrl: String) {
+abstract class AbstractHttpClient() {
 
-    // ends without '/'
-    private val baseUrl: String =
-            if (baseUrl.endsWith("/")) baseUrl.substring(0, baseUrl.length - 1)
-            else baseUrl
     var jwt: String? = null
 
-
-    @Throws(MalformedURLException::class)
-    private fun getUrl(endpoint: String): URL {
-        return URL(
-                if (endpoint.startsWith("/")) baseUrl + endpoint
-                else "$baseUrl/$endpoint"
-        )
+    fun removeJwt() {
+        this.jwt = null
     }
 
     @Throws(IOException::class)
@@ -85,7 +76,6 @@ abstract class AbstractRestClient(baseUrl: String) {
         }
     }
 
-    fun removeJwt() {
-        this.jwt = null
-    }
+    @Throws(MalformedURLException::class)
+    protected abstract fun getUrl(endpoint: String): URL
 }
