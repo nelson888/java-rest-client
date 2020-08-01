@@ -1,7 +1,8 @@
 # Java REST client
 
 This project is a Java library for working with REST services. It provides
-a client that can send requests to a REST server. It was written in Java 7 
+a client that can send requests to a REST server. It was written in Kotlin.
+The architecture of this client is inspired from the Java 9 Http Client
 
 ## Architecture
 

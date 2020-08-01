@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.tambapps.http</groupId>
-	<artifactId>restclient</artifactId>
+	<artifactId>httpclient</artifactId>
 	<version>4.0</version>
-	<name>Java Rest Client</name>
+	<name>Kotlin Rest Client</name>
 
     <dependencies>
       <dependency>
