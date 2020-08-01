@@ -22,6 +22,12 @@ class HttpHeaders(map: Map<String, List<String>>) {
         return values?.get(0)
     }
 
+    // for Groovy
+    fun getAt(name: String): String? {
+        val values = map[name]
+        return values?.get(0)
+    }
+
     /**
      * Returns whether the header with the given name has at least one value
      * @param name the  name of the header
@@ -39,6 +45,10 @@ class HttpHeaders(map: Map<String, List<String>>) {
      */
     fun getAllValues(name: String?): List<String>? {
         return map[name]
+    }
+
+    override fun toString(): String {
+        return map.toString()
     }
 
     companion object {
