@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.util;
+package com.tambapps.http.client.util;
 
 import java.util.Set;
 

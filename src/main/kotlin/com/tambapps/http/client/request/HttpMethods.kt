@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.request
+package com.tambapps.http.client.request
 
 object HttpMethods {
     const val GET = "GET"

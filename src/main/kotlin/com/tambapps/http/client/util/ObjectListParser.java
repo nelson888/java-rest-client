@@ -1,9 +1,11 @@
-package com.tambapps.http.restclient.util;
+package com.tambapps.http.client.util;
+
+import java.util.List;
 
 /**
- * Class that can parse an object from a string in a given format. For example JSON, XML, ...
+ * Class that can parse a list of object from a string in a given format. For example JSON, XML, ...
  */
-public interface ObjectParser {
+public interface ObjectListParser {
 
   /**
    * Parse an object of a given class from the string
@@ -12,5 +14,6 @@ public interface ObjectParser {
    * @param <T> the type f the object
    * @return the converted object from the string
    */
-  <T> T parse(Class<T> clazz, String data);
+  <T> List<T> parse(Class<T> clazz, String data);
+
 }

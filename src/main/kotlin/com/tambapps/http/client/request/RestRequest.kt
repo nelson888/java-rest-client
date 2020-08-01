@@ -1,14 +1,14 @@
-package com.tambapps.http.restclient.request
+package com.tambapps.http.client.request
 
-import com.tambapps.http.restclient.request.body.BodyProcessor
-import com.tambapps.http.restclient.response.HttpHeaders
+import com.tambapps.http.client.request.body.BodyProcessor
+import com.tambapps.http.client.response.HttpHeaders
 import java.util.*
 
 /**
  * Class that holds REST request data
  */
 class RestRequest private constructor(
-        val endpoint: String, headers: Map<String, String>,
+        public val endpoint: String, headers: Map<String, String>,
         val method: String, val timeout: Int?,
         val bodyProcessor: BodyProcessor?) {
 

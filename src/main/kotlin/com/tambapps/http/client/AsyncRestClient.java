@@ -1,9 +1,9 @@
-package com.tambapps.http.restclient;
+package com.tambapps.http.client;
 
-import com.tambapps.http.restclient.request.RestRequest;
-import com.tambapps.http.restclient.response.handler.ResponseHandler;
-import com.tambapps.http.restclient.response.handler.ResponseHandlers;
-import com.tambapps.http.restclient.response.RestResponse;
+import com.tambapps.http.client.request.RestRequest;
+import com.tambapps.http.client.response.handler.ResponseHandler;
+import com.tambapps.http.client.response.handler.ResponseHandlers;
+import com.tambapps.http.client.response.RestResponse;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

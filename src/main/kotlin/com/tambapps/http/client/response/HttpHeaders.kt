@@ -1,4 +1,4 @@
-package com.tambapps.http.restclient.response
+package com.tambapps.http.client.response
 
 import java.util.*
 

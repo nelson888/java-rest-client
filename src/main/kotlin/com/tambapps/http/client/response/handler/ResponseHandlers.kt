@@ -1,6 +1,6 @@
-package com.tambapps.http.restclient.response.handler
+package com.tambapps.http.client.response.handler
 
-import com.tambapps.http.restclient.util.*
+import com.tambapps.http.client.util.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

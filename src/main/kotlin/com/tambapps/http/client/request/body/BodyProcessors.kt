@@ -1,9 +1,9 @@
-package com.tambapps.http.restclient.request.body
+package com.tambapps.http.client.request.body
 
-import com.tambapps.http.restclient.response.HttpHeaders
-import com.tambapps.http.restclient.util.BytesContainer
-import com.tambapps.http.restclient.util.IOUtils
-import com.tambapps.http.restclient.util.ISSupplier
+import com.tambapps.http.client.response.HttpHeaders
+import com.tambapps.http.client.util.BytesContainer
+import com.tambapps.http.client.util.IOUtils
+import com.tambapps.http.client.util.ISSupplier
 import java.io.*
 import java.net.URLConnection
 
