@@ -61,17 +61,6 @@ object IOUtils {
      */
     /**
      * Reads an input stream to retrieve all the bytes
-     * @param iStream the input stream
-     * @return a container containing all the bytes of the inputstream
-     * @throws IOException in case of I/O error
-     */
-    @JvmOverloads
-    @Throws(IOException::class)
-    fun toByteArray(iStream: InputStream, bufferSize: Int = DEFAULT_BUFFER_SIZE): BytesContainer {
-        return BytesContainer(toBytes(iStream, bufferSize))
-    }
-    /**
-     * Reads an input stream to retrieve all the bytes
      * @param is the input stream
      * @param bufferSize the buffer size
      * @return a byte array containing all the bytes of the input stream

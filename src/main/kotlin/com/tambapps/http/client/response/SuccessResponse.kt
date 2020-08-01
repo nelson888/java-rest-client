@@ -8,7 +8,8 @@ class SuccessResponse<T> internal constructor(responseCode: Int, headers: HttpHe
     override val isSuccessful = true
     override val hasBody = myData != null
     override val data: T
-        get() = myData!!
+        get() =  if (hasBody)  myData!!
+        else throw IllegalAccessException("Success response doesn't have error data")
 
     override fun <ErrorT> getErrorData(responseHandler: ResponseHandler<ErrorT>): ErrorT {
         throw IllegalAccessException("Success response doesn't have error data")
