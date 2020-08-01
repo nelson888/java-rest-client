@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Class that holds REST request data
  */
-class RestRequest private constructor(
+class Request private constructor(
         public val endpoint: String, headers: Map<String, String>,
         val method: String, val timeout: Int?,
         val bodyProcessor: BodyProcessor?) {
@@ -152,8 +152,8 @@ class RestRequest private constructor(
          * Build the rest request
          * @return the rest request
          */
-        fun build(): RestRequest {
-            return RestRequest(endpointWithParameters(), headers, method, timeout, bodyProcessor)
+        fun build(): Request {
+            return Request(endpointWithParameters(), headers, method, timeout, bodyProcessor)
         }
 
         private fun endpointWithParameters(): String {

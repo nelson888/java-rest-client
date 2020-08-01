@@ -6,7 +6,7 @@ import com.tambapps.http.client.response.handler.ResponseHandler
  * Class representing a response from a REST service
  * @param <T> the type of the response
 </T> */
-interface RestResponse<T> {
+interface Response<T> {
     /**
      * Returns the response code
      * @return the response code

@@ -3,9 +3,9 @@ package com.tambapps.http.client.response
 import com.tambapps.http.client.response.handler.ResponseHandler
 import java.io.ByteArrayInputStream
 
-class ErrorResponse<T> constructor(responseCode: Int, headers: HttpHeaders, override val rawErrorData: ByteArray) : AbstractRestResponse<T>(responseCode, headers) {
+class ErrorResponse<T> constructor(responseCode: Int, headers: HttpHeaders, override val rawErrorData: ByteArray) : AbstractResponse<T>(responseCode, headers) {
 
-    constructor(rawErrorData: ByteArray): this(RestResponse.REQUEST_NOT_SENT, HttpHeaders(emptyMap()), rawErrorData)
+    constructor(rawErrorData: ByteArray): this(Response.REQUEST_NOT_SENT, HttpHeaders(emptyMap()), rawErrorData)
 
     override val isErrorResponse = true
     override val isSuccessful = false

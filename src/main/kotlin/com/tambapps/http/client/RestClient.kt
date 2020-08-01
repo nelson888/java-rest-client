@@ -1,7 +1,7 @@
 package com.tambapps.http.client
 
-import com.tambapps.http.client.request.RestRequest
-import com.tambapps.http.client.response.RestResponse
+import com.tambapps.http.client.request.Request
+import com.tambapps.http.client.response.Response
 import com.tambapps.http.client.response.handler.ResponseHandler
 import com.tambapps.http.client.response.handler.ResponseHandlers.noResponse
 
@@ -19,7 +19,7 @@ class RestClient
      * @param request the request to execute
      * @return the response of the server
      */
-    fun execute(request: RestRequest): RestResponse<Unit> {
+    fun execute(request: Request): Response<Unit> {
         return execute(request, noResponse())
     }
 
@@ -29,7 +29,7 @@ class RestClient
      * @param responseHandler the response handler
      * @return the response of the server
      */
-    fun <T> execute(request: RestRequest, responseHandler: ResponseHandler<T>): RestResponse<T> {
+    fun <T> execute(request: Request, responseHandler: ResponseHandler<T>): Response<T> {
         return doExecute(request, responseHandler)
     }
 }

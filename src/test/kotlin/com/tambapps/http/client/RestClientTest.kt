@@ -1,10 +1,9 @@
 package com.tambapps.http.client
 
-import com.tambapps.http.client.request.RestRequest
-import com.tambapps.http.client.request.RestRequest.Companion.builder
-import com.tambapps.http.client.request.RestRequest.Companion.delete
-import com.tambapps.http.client.request.RestRequest.Companion.get
-import com.tambapps.http.client.request.RestRequest.Companion.put
+import com.tambapps.http.client.request.Request
+import com.tambapps.http.client.request.Request.Companion.delete
+import com.tambapps.http.client.request.Request.Companion.get
+import com.tambapps.http.client.request.Request.Companion.put
 import com.tambapps.http.client.request.body.BodyProcessors.string
 import org.junit.Test
 
@@ -13,7 +12,7 @@ class RestClientTest : AbstractRestClientTest() {
 
     @Test
     fun test() {
-        val request: RestRequest = get("posts/1")
+        val request: Request = get("posts/1")
                 .build()
         val response = client.execute(request, RESPONSE_HANDLER)
         getAsserts(response)
@@ -23,7 +22,7 @@ class RestClientTest : AbstractRestClientTest() {
     fun putTest() {
         val id = 8
         val post = Post(id, 43, "title", "body")
-        val request: RestRequest = put("posts/$id")
+        val request: Request = put("posts/$id")
                 .json()
                 .body(string(GSON.toJson(post)))
                 .build()
@@ -34,7 +33,7 @@ class RestClientTest : AbstractRestClientTest() {
     @Test
     fun postTest() {
         val post = Post(0, 43, "title", "body")
-        val request: RestRequest = RestRequest.post("posts/")
+        val request: Request = Request.post("posts/")
                 .json()
                 .body(string(GSON.toJson(post)))
                 .build()

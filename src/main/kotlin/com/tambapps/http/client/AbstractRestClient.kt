@@ -1,9 +1,9 @@
 package com.tambapps.http.client
 
-import com.tambapps.http.client.request.RestRequest
+import com.tambapps.http.client.request.Request
 import com.tambapps.http.client.response.ErrorResponse
 import com.tambapps.http.client.response.HttpHeaders
-import com.tambapps.http.client.response.RestResponse
+import com.tambapps.http.client.response.Response
 import com.tambapps.http.client.response.SuccessResponse
 import com.tambapps.http.client.response.handler.ResponseHandler
 import com.tambapps.http.client.util.IOUtils
@@ -30,7 +30,7 @@ abstract class AbstractRestClient(baseUrl: String) {
     }
 
     @Throws(IOException::class)
-    private fun prepareConnection(request: RestRequest): HttpURLConnection {
+    private fun prepareConnection(request: Request): HttpURLConnection {
         val connection = getUrl(request.endpoint).openConnection() as HttpURLConnection
         connection.requestMethod = request.method
         for ((key, value) in request.headers) {
@@ -45,7 +45,7 @@ abstract class AbstractRestClient(baseUrl: String) {
         return connection
     }
 
-    protected open fun <T> doExecute(request: RestRequest, successResponseHandler: ResponseHandler<T>): RestResponse<T> {
+    protected open fun <T> doExecute(request: Request, successResponseHandler: ResponseHandler<T>): Response<T> {
         val connection: HttpURLConnection
         try {
             connection = prepareConnection(request)
@@ -56,7 +56,7 @@ abstract class AbstractRestClient(baseUrl: String) {
             return ErrorResponse(e.message!!.toByteArray())
         }
         val responseHeaders: MutableMap<String, List<String>> = HashMap()
-        var responseCode = RestResponse.REQUEST_NOT_SENT
+        var responseCode = Response.REQUEST_NOT_SENT
         try {
             responseCode = connection.responseCode
             responseHeaders.putAll(connection.headerFields)
