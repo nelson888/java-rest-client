@@ -48,37 +48,25 @@ object ResponseHandlers {
     fun multipartBytes(): ResponseHandler<ByteArray> {
         return bytes()
     }
-    /**
-     * handler writing response into a file
-     * @param file the file to write the response content to
-     * @param bufferSize the buffer size
-     * @return response handler writing in given file
-     */
+
     /**
      * handler writing response into a file
      * @param file the file to write the response content to
      * @return response handler writing in given file
      */
-    @JvmOverloads
-    fun multipartFile(file: File,
-                      bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): ResponseHandler<File> {
-        return FileHandler(file, bufferSize)
+    @JvmStatic
+    fun multipartFile(file: File): ResponseHandler<File> {
+        return FileHandler(file)
     }
-    /**
-     * handler writing response into a file
-     * @param filePath the path of the file to write the response content to
-     * @param bufferSize the buffer size
-     * @return response handler writing in given file
-     */
+
     /**
      * handler writing response into a file
      * @param filePath the path of the file to write the response content to
      * @return response handler writing in given file
      */
-    @JvmOverloads
-    fun multipartFile(filePath: String,
-                      bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): ResponseHandler<File> {
-        return multipartFile(File(filePath), bufferSize)
+    @JvmStatic
+    fun multipartFile(filePath: String): ResponseHandler<File> {
+        return multipartFile(File(filePath))
     }
 
     /**
@@ -135,11 +123,10 @@ object ResponseHandlers {
         }
     }
 
-    private class FileHandler(private val file: File,
-                              private val bufferSize: Int): ResponseHandler<File> {
+    private class FileHandler(private val file: File): ResponseHandler<File> {
         @Throws(IOException::class)
         override fun convert(inputStream: InputStream): File {
-            file.outputStream().use { fos -> IOUtils.copy(inputStream, fos, bufferSize) }
+            file.outputStream().use { fos -> IOUtils.copy(inputStream, fos) }
             return file
         }
     }

@@ -17,23 +17,23 @@ object BodyProcessors {
     }
 
     @JvmOverloads
-    fun multipartFile(file: File, key: String = file.name, bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): BodyProcessor {
-        return MultipartFileBodyProcessor(file, key, bufferSize)
+    fun multipartFile(file: File, key: String = file.name): BodyProcessor {
+        return MultipartFileBodyProcessor(file, key)
     }
 
     @JvmOverloads
-    fun multipartBytes(bytes: ByteArray, name: String, key: String = name, bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): BodyProcessor {
-        return MultipartBytesBodyProcessor(bytes, name, key, bufferSize)
+    fun multipartBytes(bytes: ByteArray, name: String, key: String = name): BodyProcessor {
+        return MultipartBytesBodyProcessor(bytes, name, key)
     }
 
-    @JvmOverloads
-    fun multipartStream(isSupplier: ISSupplier, name: String, bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): BodyProcessor {
-        return multipartStream(isSupplier, name, name, bufferSize)
+    @JvmStatic
+    fun multipartStream(isSupplier: ISSupplier, name: String): BodyProcessor {
+        return multipartStream(isSupplier, name, name)
     }
 
-    @JvmOverloads
-    fun multipartStream(isSupplier: ISSupplier, name: String, key: String, bufferSize: Int = IOUtils.DEFAULT_BUFFER_SIZE): BodyProcessor {
-        return MultipartInputStreamBodyProcessor(isSupplier, key, name, bufferSize)
+    @JvmStatic
+    fun multipartStream(isSupplier: ISSupplier, name: String, key: String): BodyProcessor {
+        return MultipartInputStreamBodyProcessor(isSupplier, key, name)
     }
 
     @JvmStatic
@@ -61,7 +61,7 @@ object BodyProcessors {
         }
     }
 
-    private abstract class MultipartBodyProcessor internal constructor(private val name: String, private val key: String, private val bufferSize: Int) : AbstractBodyProcessor() {
+    private abstract class MultipartBodyProcessor internal constructor(private val name: String, private val key: String) : AbstractBodyProcessor() {
         private val boundary = "*****"
         private val crlf = "\r\n"
         private val twoHyphens = "--"
@@ -75,7 +75,7 @@ object BodyProcessors {
                         key + "\";filename=\"" +
                         name + "\"" + crlf)
                 request.writeBytes(crlf)
-                writeMultipart(request, bufferSize)
+                writeMultipart(request)
                 request.writeBytes(crlf)
                 request.writeBytes(twoHyphens + boundary + twoHyphens + crlf)
                 request.flush()
@@ -83,7 +83,7 @@ object BodyProcessors {
         }
 
         @Throws(IOException::class)
-        abstract fun writeMultipart(request: DataOutputStream, bufferSize: Int)
+        abstract fun writeMultipart(request: DataOutputStream)
         override fun prepareURLConnection(connection: URLConnection) {
             connection.useCaches = false
             connection.setRequestProperty("Connection", "Keep-Alive")
@@ -94,32 +94,32 @@ object BodyProcessors {
 
     }
 
-    private abstract class MultipartStreamBodyProcessor internal constructor(name: String, key: String, bufferSize: Int) : MultipartBodyProcessor(name, key, bufferSize) {
+    private abstract class MultipartStreamBodyProcessor internal constructor(name: String, key: String) : MultipartBodyProcessor(name, key) {
         @Throws(IOException::class)
-        override fun writeMultipart(request: DataOutputStream, bufferSize: Int) {
-            inputStream.use { iStream -> IOUtils.copy(iStream, request, bufferSize) }
+        override fun writeMultipart(request: DataOutputStream) {
+            inputStream.use { iStream -> IOUtils.copy(iStream, request) }
         }
 
         @get:Throws(IOException::class)
         abstract val inputStream: InputStream
     }
 
-    private class MultipartFileBodyProcessor internal constructor(private val file: File, key: String, bufferSize: Int) : MultipartStreamBodyProcessor(file.name, key, bufferSize) {
+    private class MultipartFileBodyProcessor internal constructor(private val file: File, key: String) : MultipartStreamBodyProcessor(file.name, key) {
         @get:Throws(IOException::class)
         override val inputStream: InputStream
             get() = FileInputStream(file)
     }
 
-    private class MultipartInputStreamBodyProcessor internal constructor(private val isSupplier: ISSupplier, name: String, key: String, bufferSize: Int) : MultipartStreamBodyProcessor(name, key, bufferSize) {
+    private class MultipartInputStreamBodyProcessor internal constructor(private val isSupplier: ISSupplier, name: String, key: String) : MultipartStreamBodyProcessor(name, key) {
         @get:Throws(IOException::class)
         override val inputStream: InputStream
             get() = isSupplier.get()
     }
 
     private class MultipartBytesBodyProcessor internal constructor(private val bytes: ByteArray,
-                                                                           name: String, key: String, bufferSize: Int) : MultipartBodyProcessor(name, key, bufferSize) {
+                                                                           name: String, key: String) : MultipartBodyProcessor(name, key) {
         @Throws(IOException::class)
-        override fun writeMultipart(request: DataOutputStream, bufferSize: Int) {
+        override fun writeMultipart(request: DataOutputStream) {
             request.write(bytes)
         }
     }
