@@ -67,7 +67,8 @@ abstract class AbstractHttpClient {
             responseCode = connection.responseCode
             responseHeaders.putAll(connection.headerFields)
             if (IOUtils.isErrorCode(responseCode)) {
-                val stream = connection.errorStream
+                // sometimes, Java might use inputStream even though the response code isn't a successful one
+                val stream = connection.errorStream ?: connection.inputStream
                 if (stream != null) {
                     return stream.use {
                         ErrorResponse(responseCode, HttpHeaders(responseHeaders), IOUtils.toBytes(it))
