@@ -26,10 +26,10 @@ interface Response<T> {
     val isSuccessful: Boolean
 
     /**
-     * Returns whether the response has a body
-     * @return whether the response has a body
+     * Returns whether the response has data
+     * @return whether the response has data
      */
-    val hasBody: Boolean
+    val hasData: Boolean
     /**
      * Get the data of the response, if it was successful
      * @return the data

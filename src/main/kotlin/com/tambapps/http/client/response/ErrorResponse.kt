@@ -9,7 +9,7 @@ class ErrorResponse<T> constructor(responseCode: Int, headers: HttpHeaders, over
 
     override val isErrorResponse = true
     override val isSuccessful = false
-    override val hasBody = rawErrorData.isNotEmpty()
+    override val hasData = rawErrorData.isNotEmpty()
 
     override val data: T get() = throw IllegalAccessException("Error response doesn't have error data")
 
