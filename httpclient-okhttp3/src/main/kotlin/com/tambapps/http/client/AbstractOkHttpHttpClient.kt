@@ -38,7 +38,7 @@ abstract class AbstractOkHttpHttpClient(): AbstractHttpClient() {
                 val data = successResponseHandler.convert(getInputStream(response))
                 SuccessResponse(response.code, headers, data)
             } else {
-                val bytes = getInputStream(response).readAllBytes()
+                val bytes = getInputStream(response).readBytes()
                 ErrorResponse(response.code, headers, bytes)
             }
         }
