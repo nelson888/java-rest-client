@@ -36,7 +36,12 @@ abstract class AbstractUrlHttpClient: AbstractHttpClient() {
         try {
             connection = prepareConnection(request)
             if (request.hasBody()) {
-                request.bodyProcessor!!.prepareConnection(connection)
+                val bodyProcessor = request.bodyProcessor!!
+                bodyProcessor.headers().forEach { (name, value) -> connection.setRequestProperty(name, value) }
+                connection.doOutput = true
+                connection.outputStream.use {
+                    bodyProcessor.writeInto(it)
+                }
             }
         } catch (e: IOException) {
             return ErrorResponse("Error while preparing connection: ${e.message}".toByteArray())

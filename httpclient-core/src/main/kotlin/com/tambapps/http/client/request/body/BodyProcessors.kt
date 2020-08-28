@@ -51,23 +51,23 @@ object BodyProcessors {
         return FileBodyProcessor(file)
     }
 
-    private class StringBodyProcessor(private val content: String) : AbstractBodyProcessor() {
+    private class StringBodyProcessor(private val content: String) : BodyProcessor {
         @Throws(IOException::class)
-        public override fun writeContent(oStream: OutputStream) {
-            OutputStreamWriter(oStream).use { wr ->
+        override fun writeInto(oStream: OutputStream) {
+            oStream.writer().use { wr ->
                 wr.write(content)
                 wr.flush()
             }
         }
     }
 
-    private abstract class MultipartBodyProcessor internal constructor(private val name: String, private val key: String) : AbstractBodyProcessor() {
+    private abstract class MultipartBodyProcessor internal constructor(private val name: String, private val key: String) : BodyProcessor {
         private val boundary = "*****"
         private val crlf = "\r\n"
         private val twoHyphens = "--"
 
         @Throws(IOException::class)
-        override fun writeContent(oStream: OutputStream) {
+        override fun writeInto(oStream: OutputStream) {
             DataOutputStream(
                     oStream).use { request ->
                 request.writeBytes(twoHyphens + boundary + crlf)
@@ -84,14 +84,13 @@ object BodyProcessors {
 
         @Throws(IOException::class)
         abstract fun writeMultipart(request: DataOutputStream)
-        override fun prepareURLConnection(connection: URLConnection) {
-            connection.useCaches = false
-            connection.setRequestProperty("Connection", "Keep-Alive")
-            connection.setRequestProperty("Cache-Control", "no-cache")
-            connection.setRequestProperty(
-                    HttpHeaders.CONTENT_TYPE_HEADER, "multipart/form-data;boundary=$boundary")
-        }
 
+        override fun headers(): Map<String, String> {
+            return mapOf(
+                    Pair("Connection", "Keep-Alive"),
+                    Pair("Cache-Control", "no-cache"),
+                    Pair(HttpHeaders.CONTENT_TYPE_HEADER, "multipart/form-data;boundary=$boundary"))
+        }
     }
 
     private abstract class MultipartStreamBodyProcessor internal constructor(name: String, key: String) : MultipartBodyProcessor(name, key) {
@@ -124,23 +123,23 @@ object BodyProcessors {
         }
     }
 
-    private class BytesBodyProcessor(private val bytes: ByteArray) : AbstractBodyProcessor() {
-        @Throws(IOException::class)
-        override fun writeContent(oStream: OutputStream) {
+    private class BytesBodyProcessor(private val bytes: ByteArray) : BodyProcessor {
+
+        override fun writeInto(oStream: OutputStream) {
             oStream.write(bytes, 0, bytes.size)
         }
     }
 
-    private class FileBodyProcessor(private val file: File) : AbstractBodyProcessor() {
+    private class FileBodyProcessor(private val file: File) : BodyProcessor {
         @Throws(IOException::class)
-        override fun writeContent(oStream: OutputStream) {
+        override fun writeInto(oStream: OutputStream) {
             FileInputStream(file).use { iStream -> IOUtils.copy(iStream, oStream) }
         }
     }
 
-    private class InputStreamBodyProcessor(private val supplier: ISSupplier) : AbstractBodyProcessor() {
+    private class InputStreamBodyProcessor(private val supplier: ISSupplier) : BodyProcessor {
         @Throws(IOException::class)
-        override fun writeContent(oStream: OutputStream) {
+        override fun writeInto(oStream: OutputStream) {
             supplier.get().use { iStream -> IOUtils.copy(iStream, oStream) }
         }
     }
