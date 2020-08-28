@@ -9,8 +9,13 @@ import com.tambapps.http.client.response.handler.ResponseHandler
 import com.tambapps.http.client.util.IOUtils
 import java.io.IOException
 import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
 
 abstract class AbstractUrlHttpClient: AbstractHttpClient() {
+
+    @Throws(MalformedURLException::class)
+    protected abstract fun getUrl(endpoint: String): URL
 
     @Throws(IOException::class)
     private fun prepareConnection(request: Request): HttpURLConnection {
