@@ -6,7 +6,7 @@ import java.net.URL
 /**
  * Class that sends synchronous Http requests
  */
-class HttpClient : AbstractHttpClient() {
+class HttpClient : AbstractUrlHttpClient() {
 
     @Throws(MalformedURLException::class)
     override fun getUrl(url: String): URL {

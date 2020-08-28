@@ -11,6 +11,7 @@
 
   <modules>
     <module>httpclient-core</module>
+    <module>httpclient-url</module>
   </modules>
 
   <dependencyManagement>

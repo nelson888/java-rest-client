@@ -13,7 +13,7 @@ class RestClient
  *
  * @param baseUrl the base url of the rest api
  */
-(baseUrl: String) : AbstractHttpClient() {
+(baseUrl: String) : AbstractUrlHttpClient() {
 
     // ends without '/'
     private val baseUrl: String =

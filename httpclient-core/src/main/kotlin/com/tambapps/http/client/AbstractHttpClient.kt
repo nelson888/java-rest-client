@@ -51,45 +51,7 @@ abstract class AbstractHttpClient {
         return connection
     }
 
-    protected open fun <T> doExecute(request: Request, successResponseHandler: ResponseHandler<T>): Response<T> {
-        val connection: HttpURLConnection
-        try {
-            connection = prepareConnection(request)
-            if (request.hasBody()) {
-                request.bodyProcessor!!.prepareConnection(connection)
-            }
-        } catch (e: IOException) {
-            return ErrorResponse("Error while preparing connection: ${e.message}".toByteArray())
-        }
-        val responseHeaders: MutableMap<String, List<String>> = HashMap()
-        var responseCode = Response.REQUEST_NOT_SENT
-        try {
-            responseCode = connection.responseCode
-            responseHeaders.putAll(connection.headerFields)
-            if (IOUtils.isErrorCode(responseCode)) {
-                // sometimes, Java might use inputStream even though the response code isn't a successful one
-                val stream = connection.errorStream ?: connection.inputStream
-                if (stream != null) {
-                    return stream.use {
-                        ErrorResponse(responseCode, HttpHeaders(responseHeaders), IOUtils.toBytes(it))
-                    }
-                } else {
-                    return ErrorResponse(responseCode, HttpHeaders(responseHeaders), ByteArray(0))
-                }
-            } else {
-                val stream = connection.inputStream
-                if (stream != null) {
-                    return SuccessResponse(responseCode, HttpHeaders(responseHeaders), successResponseHandler.convert(stream))
-                } else {
-                    return SuccessResponse(responseCode, HttpHeaders(responseHeaders), null)
-                }
-            }
-        } catch (e: IOException) {
-            return ErrorResponse(responseCode, HttpHeaders(responseHeaders), e.message!!.toByteArray())
-        } finally {
-            connection.disconnect()
-        }
-    }
+    protected abstract fun <T> doExecute(request: Request, successResponseHandler: ResponseHandler<T>): Response<T>
 
     @Throws(MalformedURLException::class)
     protected abstract fun getUrl(endpoint: String): URL
