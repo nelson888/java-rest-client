@@ -3,6 +3,9 @@
 This project is a Java library for working with REST services. It provides
 a client that can send requests to a REST server. It was written in Kotlin.
 The architecture of this client is inspired from the Java 9 Http Client
+There are multiple clients. Each have the same API, but they are backed by different library:
+- `http-client-url` is backed by native Java URL class
+- `http-client-okhttp3` is backed by okhttp3
 
 ## Architecture
 
