@@ -4,8 +4,11 @@ import java.io.IOException
 import java.net.URLConnection
 
 /**
- * Interface that configure an URLConnection to put a body on the request
+ * Interface that writes request content into an output stream
  */
+// TODO change interface
+// make method write(OutputStream)
+//      get mimeType
 interface BodyProcessor {
     /**
      * Prepare and write the body content on the url connection

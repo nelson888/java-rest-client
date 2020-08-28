@@ -8,7 +8,7 @@ import java.util.*
  * Class that holds Http request data
  */
 class Request private constructor(
-        public val endpoint: String, headers: Map<String, String>,
+        val endpoint: String, headers: Map<String, String>,
         val method: String, val timeout: Int?,
         val bodyProcessor: BodyProcessor?) {
 

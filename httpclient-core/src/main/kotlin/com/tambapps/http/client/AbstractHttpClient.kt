@@ -5,8 +5,6 @@ import com.tambapps.http.client.request.Request
 import com.tambapps.http.client.response.Response
 import com.tambapps.http.client.response.handler.ResponseHandler
 import com.tambapps.http.client.response.handler.ResponseHandlers
-import java.net.MalformedURLException
-import java.net.URL
 
 abstract class AbstractHttpClient {
 
@@ -32,7 +30,6 @@ abstract class AbstractHttpClient {
     }
 
     protected abstract fun <T> doExecute(request: Request, successResponseHandler: ResponseHandler<T>): Response<T>
-
 
     companion object {
         @JvmStatic
