@@ -16,15 +16,10 @@ class RestClient
 (baseUrl: String) : AbstractUrlHttpClient() {
 
     // ends without '/'
-    private val baseUrl: String =
-            if (baseUrl.endsWith("/")) baseUrl.substring(0, baseUrl.length - 1)
-            else baseUrl
+    private val baseUrl: String = formatBaseUrl(baseUrl)
 
     @Throws(MalformedURLException::class)
     override fun getUrl(endpoint: String): URL {
-        return URL(
-                if (endpoint.startsWith("/")) baseUrl + endpoint
-                else "$baseUrl/$endpoint"
-        )
+        return URL(getRestUrl(baseUrl, endpoint))
     }
 }

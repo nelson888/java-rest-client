@@ -5,6 +5,8 @@ import com.tambapps.http.client.request.Request
 import com.tambapps.http.client.response.Response
 import com.tambapps.http.client.response.handler.ResponseHandler
 import com.tambapps.http.client.response.handler.ResponseHandlers
+import java.net.MalformedURLException
+import java.net.URL
 
 abstract class AbstractHttpClient {
 
@@ -31,4 +33,18 @@ abstract class AbstractHttpClient {
 
     protected abstract fun <T> doExecute(request: Request, successResponseHandler: ResponseHandler<T>): Response<T>
 
+
+    companion object {
+        @JvmStatic
+        protected fun formatBaseUrl(baseUrl: String): String {
+            return if (baseUrl.endsWith("/")) baseUrl.substring(0, baseUrl.length - 1)
+            else baseUrl
+        }
+
+        @JvmStatic
+        protected fun getRestUrl(baseUrl: String, endpoint: String): String {
+            return if (endpoint.startsWith("/")) baseUrl + endpoint
+            else "$baseUrl/$endpoint"
+        }
+    }
 }
