@@ -9,7 +9,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.*
 
-abstract class AbstractRestClientTest {
+abstract class AbstractTest {
     fun getAsserts(response: Response<Post>) {
         Assert.assertTrue("Should be successful", response.isSuccessful)
         Assert.assertFalse("Shouldn't be an error code", response.isErrorResponse)
