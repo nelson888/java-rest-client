@@ -24,10 +24,12 @@ abstract class AbstractUrlHttpClient: AbstractHttpClient() {
         for ((key, value) in this.headers) {
             connection.setRequestProperty(key, value)
         }
+        if (authentication != null) {
+            connection.setRequestProperty(authentication!!.header, authentication!!.value)
+        }
         for ((key, value) in request.headers) {
             connection.setRequestProperty(key, value)
         }
-        authentication?.authenticate(connection)
         if (request.timeout != null) {
             connection.connectTimeout = request.timeout as Int
         }

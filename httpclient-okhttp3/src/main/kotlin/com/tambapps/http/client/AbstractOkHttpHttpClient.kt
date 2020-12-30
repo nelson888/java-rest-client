@@ -28,6 +28,9 @@ abstract class AbstractOkHttpHttpClient: AbstractHttpClient() {
         val okHttpRequest = OkHttpRequest.Builder().apply {
             url(getUrl(request.endpoint))
             this@AbstractOkHttpHttpClient.headers.forEach{ (name, value) -> header(name, value) }
+            if (authentication != null) {
+                header(authentication!!.header, authentication!!.value)
+            }
             request.headers.forEach { (name, value) -> header(name, value) }
             var body: RequestBody? = null
             if (request.timeout != null) {

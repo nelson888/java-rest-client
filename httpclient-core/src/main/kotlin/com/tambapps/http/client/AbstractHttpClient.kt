@@ -1,6 +1,6 @@
 package com.tambapps.http.client
 
-import com.tambapps.http.client.auth.Authentication
+import com.tambapps.http.client.auth.HeaderAuthentication
 import com.tambapps.http.client.request.Request
 import com.tambapps.http.client.response.Response
 import com.tambapps.http.client.response.handler.ResponseHandler
@@ -8,10 +8,10 @@ import com.tambapps.http.client.response.handler.ResponseHandlers
 
 abstract class AbstractHttpClient {
 
-    var authentication: Authentication? = null
+    var authentication: HeaderAuthentication? = null
 
     // headers that will be added to all requests. They can be overrided by request headers
-    private val headers: MutableMap<String, String> = mutableMapOf()
+    protected val headers: MutableMap<String, String> = mutableMapOf()
 
     /**
      * Execute an http request
