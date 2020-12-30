@@ -10,6 +10,9 @@ abstract class AbstractHttpClient {
 
     var authentication: Authentication? = null
 
+    // headers that will be added to all requests. They can be overrided by request headers
+    private val headers: MutableMap<String, String> = mutableMapOf()
+
     /**
      * Execute an http request
      * @param request the request to execute
@@ -43,5 +46,17 @@ abstract class AbstractHttpClient {
             return if (endpoint.startsWith("/")) baseUrl + endpoint
             else "$baseUrl/$endpoint"
         }
+    }
+
+    fun addHeader(name: String, value: String) {
+        headers[name] = value
+    }
+
+    fun removeHeader(name: String) {
+        headers.remove(name)
+    }
+
+    fun getHeader(name: String): String? {
+        return headers[name]
     }
 }

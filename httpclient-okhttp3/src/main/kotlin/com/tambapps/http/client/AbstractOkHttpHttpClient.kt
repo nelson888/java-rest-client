@@ -27,6 +27,7 @@ abstract class AbstractOkHttpHttpClient: AbstractHttpClient() {
     override fun <T> doExecute(request: Request, successResponseHandler: ResponseHandler<T>): Response<T> {
         val okHttpRequest = OkHttpRequest.Builder().apply {
             url(getUrl(request.endpoint))
+            this@AbstractOkHttpHttpClient.headers.forEach{ (name, value) -> header(name, value) }
             request.headers.forEach { (name, value) -> header(name, value) }
             var body: RequestBody? = null
             if (request.timeout != null) {

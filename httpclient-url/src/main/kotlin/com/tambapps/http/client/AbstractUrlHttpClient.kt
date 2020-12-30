@@ -21,6 +21,9 @@ abstract class AbstractUrlHttpClient: AbstractHttpClient() {
     private fun prepareConnection(request: Request): HttpURLConnection {
         val connection = getUrl(request.endpoint).openConnection() as HttpURLConnection
         connection.requestMethod = request.method
+        for ((key, value) in this.headers) {
+            connection.setRequestProperty(key, value)
+        }
         for ((key, value) in request.headers) {
             connection.setRequestProperty(key, value)
         }
