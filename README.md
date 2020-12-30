@@ -1,6 +1,7 @@
 # Java REST client
+It is actually written in Kotlin
 
-This project is a Java library for working with REST services. It provides
+This project is a Kotlin library for working with REST services. It provides
 a client that can send requests to a REST server. It was written in Kotlin.
 The architecture of this client is inspired from the Java 9 Http Client
 There are multiple clients. Each have the same API, but they are backed by different library:
@@ -10,9 +11,8 @@ There are multiple clients. Each have the same API, but they are backed by diffe
 ## Architecture
 
 ### RestClient
-It is the main class of this library, that will send your requests synchronously/asynchronously. *
-You can also set a JWT token that will be added in every requests for JWT authentication with the
-`setJwt(String jwt)` method.
+It is the main class of this library, that will send your requests synchronously/asynchronously.
+You can also set an authentication (basic or jwt) 
 
 ### RestRequest
 The RestRequest holds the data of an Http request to a REST service.
